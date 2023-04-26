@@ -1,0 +1,23 @@
+parameters:
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+
+
+di:
+	export:
+		parameters: no
+		tags: no
+# Nastavení výchozích chybových hlášek pro formuláře.
+forms:
+    messages:
+        INTEGER: 'Zadejte celé číslo.'
+        EMAIL: 'Neplatná emailová adresa.'
+        REQUIRED: '%label je povinné vyplnit.'

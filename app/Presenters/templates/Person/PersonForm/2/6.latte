@@ -1,0 +1,132 @@
+{block content}
+<p>In 'Address' Group, there are two inputs 'street_number' and 'house_number'. They can be quite short,
+    and even on smaller devices they can be next to each other. Simplest setup for us:
+</p>
+<pre>
+<code class="language-php">
+    $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+    $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+</code>
+</pre>
+<p>It's just recapitulating of <em>'groupCol'</em> option.</p>
+<p>Our 'state' control is now alone, we can play with it. This and 'zip' are also not so long, but not as short
+as 'street_number' and 'house_number'. We can do something like this:</p>
+<pre>
+<code class="language-php">
+    $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+    $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+</code>
+</pre>
+<p>Last control to play with is 'gender'. At first, for our layout type, it would be maybe better use <em>label</em>.
+    In PersonFormFactory this control is defined as:</p>
+<pre>
+<code class="language-php">
+    $form->addRadioList("gender", null, [
+        'male' => 'Muž',
+        'female' => 'Žena',
+    ])->setRequired("Musíte mít pohlaví.");
+</code>
+</pre>
+<p>As you can see, we set parameter <strong>$label</strong> to <em>null</em>. Here is something very important about
+    Nette's behaviour around label and DefaultFormRenderer. First, look what is happening when you call
+    Form::addRadioList(...) builder method. It creates new instance of class RadioList, with <strong>$label</strong> as constructor parameter.
+    It passes on this <strong>$label</strong> parameter to ancestor class(ChoiceControl) constructor, and it passes it again
+    to the abstract ancestor of all Nette's controls <strong>BaseControl</strong>. But look carefully on constructor
+    of this class:
+</p>
+<pre>
+<code class="language-php">
+    // Constructor of Nette's Nette\Forms\Controls\BaseControl class
+	public function __construct($caption = null)
+	{
+		$this->control = Html::el('input', ['type' => null, 'name' => null]);
+		$this->label = Html::el('label');
+		$this->caption = $caption;
+		$this->rules = new Rules($this);
+		$this->setValue(null);
+		$this->monitor(Form::class, function (Form $form): void {
+			if (!$this->isDisabled() && $form->isAnchored() && $form->isSubmitted()) {
+				$this->loadHttpData();
+			}
+		});
+	}
+</code>
+</pre>
+<p>This parameter walk through inheritance hiearchy as <strong>$label</strong>, but when it reaches
+    <strong>BaseControl</strong> constructor, it is accepted as parameter named <strong>$caption</strong>.
+    Two lines from constructor:
+</p>
+<pre>
+<code class="language-php">
+    $this->label = Html::el('label');
+    $this->caption = $caption;
+</code>
+</pre>
+<div class="alert alert-warning">
+    I maybe miss something, but it seems like a little naming mismatch. It is very important to know, that
+    <strong>$label</strong> parameter in any form builder method (addText(), addRadioList(), ...) is a confusing
+    thing, and it is not really a label (representing label tag), but a <strong>$caption</strong>, which
+    is content (innerHtml, in other words) of label.
+</div>
+<p>It implies one kind of behaviour - if you set <strong>$label</strong> parameter in builder method as <em>null</em>
+    or <em>false</em>, DefaultFormRenderer (and many others I suppose...) will still generate label tag, which will be
+    empty, because by this parameter you set <strong>$caption</strong> rather than <strong>$label</strong>. But this is
+    not intended behaviour, sometime there is need to omit whole label, especially for RadioLists and CheckboxLists
+    in input group.
+</p>
+<div class="alert alert-success">
+    Bootstrap5FormRenderer brings change to process <strong>$label</strong> parameter of form builder methods.
+    When you set it to <em>null</em> or <em>false</em>, the label itself won't be generated. This can be overwritten
+    by setting up option 'label' on control, read on.
+</div>
+<p>Yep, there is another option you can use (on control level) <strong>'label'</strong>. By setting this option,
+    you can create completely your own label. This makes perfect sense when rendering RadioLists and CheckboxLists.
+    Label in this case means something describing whole control <em>structure</em>, which contains items (single
+    radios or checkboxes). These items have their own labels which have <em>for</em> attribute, but overall label doesn't.
+    You can use it for different purposes.
+</p>
+<div class="alert alert-info">
+    If you set option <strong>'label'</strong> on control, <strong>$label</strong> parameter of builder method
+    will be omitted. You must set everything by yourself, all attributes and innerHtml.
+</div>
+<p>We can demonstrate on our 'gender' RadioList. We can try rewrite our 'gender' definition in factory:</p>
+<pre>
+<code class="language-php">
+    $form->addRadioList("gender", 'Gender', [
+        'male' => 'Muž',
+        'female' => 'Žena',
+    ])->setRequired("Musíte mít pohlaví.");
+</code>
+</pre>
+<p>You can see that now we have label with content of string 'Gender'.</p>
+<p>Set <strong>$label</strong> back to <em>null</em>. We could achieve exactly same result by setting parameter
+<strong>caption</strong> of our control 'gender':</p>
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true);
+        $form->setRenderer($renderer);
+        $form['save']->setOption('groupCol', 'div class="col-12"');
+        $form['account']->setOption('row', true);
+        $form['note']->setOption('row', false)
+            ->setOption('.parent', 'd-flex flex-column h-100')
+            ->setOption('.control', 'flex-grow-1');
+        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['gender']->setCaption('Gender');
+        //------
+        return $form;
+    }
+</code>
+</pre>
+<p>And for demonstrating own label you can try:</p>
+<pre>
+<code class="language-php">
+        $form['gender']->setOption('label', Html::el('div class="text-primary"')->setText('Gender'));
+</code>
+</pre>

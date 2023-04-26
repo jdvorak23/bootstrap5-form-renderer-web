@@ -1,0 +1,32 @@
+{block content}
+<p>At first, I suppose you are familiar with
+    <a href="https://doc.nette.org/cs/forms/rendering#toc-renderer" target="_blank">DefaultFormRenderer</a>.
+    Bootstrap5FormRenderer works on the same basis. There is also <strong>$wrappers</strong> array,
+    only with more wrappers.
+</p>
+<div class="alert alert-info"><strong>$wrappers</strong> array is located in class <strong>Wrappers</strong>
+    in same namespace as Bootstrap5FormRenderer.</div>
+<p>You can work with it in same way</p>
+<pre>
+<code class="language-php">
+    $renderer->wrappers[..][..]
+</code>
+</pre>
+<p>It's already prepared for Bootstrap 5.</p>
+<p>There are two independent grid systems. One is Group-level, second is Control-level. Group-level
+    (counts those controls, which are not in Group, as being in independent Group) can be set by constructor parameter
+    <strong>$rows</strong>. It's false by default, let's try set it <em>true</em>:
+</p>
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true);
+        $form->setRenderer($renderer);
+        //------
+        return $form;
+    }
+</code>
+</pre>

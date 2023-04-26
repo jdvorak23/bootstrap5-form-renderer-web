@@ -1,0 +1,14 @@
+search:
+	-
+		in: %appDir%
+		classes:
+			- *Factory
+			- *Facade
+
+
+services:
+	- App\Router\RouterFactory::createRouter
+	- App\Forms\TestFormFactory
+	- App\Forms\PersonFormFactory
+	- App\Forms\InvoiceFormFactory
+	- App\Forms\BookingFormFactory

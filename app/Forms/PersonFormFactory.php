@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Forms;
+
+use App\Model\MyTranslator;
+use Nette\Application\UI\Form;
+
+class PersonFormFactory
+{
+    public function create() : Form
+    {
+        $form = new Form();
+        $pok = new MyTranslator();
+        $form->setTranslator($pok);
+        $form->addGroup("Person");
+        $form->addText('first_name', "First name")
+            ->setRequired("Extremly long validation message, intended to be over at least next line.");
+        $form->addText('last_name', 'Last name')
+            ->setRequired('Last name is required.');
+        $form->addRadioList("gender", null, [
+            'male' => 'Male',
+            'female' => 'Female',
+        ])->setRequired("Gender is required.");
+        $form->addEmail('email', 'Email')
+            ->addRule($form::EMAIL)
+            ->setRequired('Email is required.');
+        $form->addText('nick', 'Nickname')
+            ->setRequired('Choose your nickname.');
+        $form->addText('phone', 'Phone')
+            ->setOption("description", "Only number, or + and number")
+            ->addRule($form::PATTERN, 'Invalid phone number format.', '^(\+[0-9]*|[0-9]*)$')
+            ->setRequired('Phone is required.');
+
+        $form->addGroup("Address");
+        $form->addText("street", 'Street')
+            ->setRequired('Address is required.');
+        $form->addText("street_number", "Street no.")
+            ->setRequired('Required field.');
+        $form->addText("house_number", "House no.");
+        $form->addText("city", "City")
+            ->setRequired('City is required.');
+        $form->addText("zip", "ZIP")
+            ->addRule($form::PATTERN, 'Invalid ZIP format.', '\d{3} ?\d{2}')
+            ->addFilter(function ($value) {
+                return str_replace(' ', '', $value); // odstraníme mezery z PSČ
+            })
+            ->setRequired('ZIP is required.');
+        $form->addSelect("state", "State", ['Czech Republic', 'Slovak Republic'])
+            ->setPrompt('Choose country...')
+            ->setRequired('Choose country.');
+
+        $form->addGroup("Others");
+        $form->addText("account", 'Account number')
+            ->setRequired('Account number is required.');
+        $form->addSelect("bank", "Bank", $this->getBanks())
+            ->setPrompt('Choose bank...')
+            ->setRequired('Choose bank.');
+        $form->addTextArea("note", "Note");
+
+        $form->setCurrentGroup();
+        $form->addCheckbox('agree', 'I agree with terms and conditions')
+            ->setRequired('You have to agree with terms and conditions.');
+        $form->addSubmit('save', 'Send');
+        $form->addButton('cancel', 'Cancel')
+            ->setHtmlAttribute("type", "reset");
+
+        $form->addHidden("my_hidden", "some");
+
+        $form->onValidate[] = function (Form $form) {
+            $form->addError("Some error in whole form");
+        };
+
+        $form->onSuccess[] = function (Form $form, Array $values) {
+
+        };
+
+        return $form;
+    }
+    protected function getBanks() : array
+    {
+        return [
+            '0100 Komerční banka, a.s.',
+            '0300 Československá obchodní banka, a.s.',
+            '0600 MONETA Money Bank, a.s.',
+            '0710 ČESKÁ NÁRODNÍ BANKA',
+            '0800 Česká spořitelna, a.s.',
+            '2010 Fio banka, a.s.',
+            '2060 Citfin, spořitelní družstvo',
+            '2070 TRINITY BANK a.s.',
+            '2100 Hypoteční banka, a.s.',
+            '2200 Peněžní dům, spořitelní družstvo',
+            '2220 Artesa, spořitelní družstvo',
+            '2250 Banka CREDITAS a.s.',
+            '2260 NEY spořitelní družstvo',
+            '2600 Citibank Europe plc, organizační složka',
+            '2700 UniCredit Bank Czech Republic and Slovakia, a.s.',
+            '3030 Air Bank a.s.',
+            '3050 BNP Paribas Personal Finance SA, odštěpný závod',
+            '3060 PKO BP S.A., Czech Branch',
+            '3500 ING Bank N.V.',
+            '4000 Max banka a.s.',
+            '4300 Národní rozvojová banka, a.s.',
+            '5500 Raiffeisenbank a.s.',
+            '5800 J&T BANKA, a.s.',
+            '6000 PPF banka a.s.',
+            '6200 COMMERZBANK Aktiengesellschaft, pobočka Praha',
+            '6210 mBank S.A., organizační složka',
+            '6300 BNP Paribas S.A., pobočka Česká republika',
+            '6700 Všeobecná úverová banka a.s., pobočka Praha',
+            '7910 Deutsche Bank Aktiengesellschaft Filiale Prag, organizační složka',
+            '7950 Raiffeisen stavební spořitelna a.s.',
+            '7960 ČSOB Stavební spořitelna, a.s.',
+            '7970 MONETA Stavební Spořitelna, a.s.',
+            '7990 Modrá pyramida stavební spořitelna, a.s.',
+            '8030 Volksbank Raiffeisenbank Nordoberpfalz eG pobočka Cheb',
+            '8040 Oberbank AG pobočka Česká republika',
+            '8060 Stavební spořitelna České spořitelny, a.s.',
+            '8090 Česká exportní banka, a.s.',
+            '8150 HSBC Continental Europe, Czech Republic',
+            '8190 Sparkasse Oberlausitz-Niederschlesien',
+            '8250 Bank of China (CEE) Ltd. Prague Branch',
+            '8255 Bank of Communications Co., Ltd.',
+            '8265 Industrial and Commercial Bank of China Limited',
+            '8500 Multitude Bank p.l.c.',
+        ];
+    }
+}

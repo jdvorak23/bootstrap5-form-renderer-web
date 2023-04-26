@@ -1,0 +1,114 @@
+{block content}
+<p>CheckboxList an RadioList are quite specific controls. They're one control, but have more items. When you have,
+for example, TextInput, element of this TextInput is pretty clear - it's <em>&#60;input type="text" .../&#62;</em> html element,
+    representing control itself. But what is it in the case of CheckboxList or RadioList (and even Checkbox)? The element
+    of these controls is not control element itself, it's just some wrapper (container), which has children of items.
+    Item is single checkbox or radio (probably with label together).</p>
+<p>Nette's DefaultFromRenderer doesn't care about this. When it's about rendering any control, it does:</p>
+<pre>
+<code class="language-php">
+    $el = $control->getControl();
+</code>
+</pre>
+<p>This method <strong>getControl()</strong> is (as expected) overloaded in all classes we are talking about. It's creating Html structure
+    of all items. There is (only these three classes have it) specific property <strong>$container</strong>, which is that
+    wrapper for the whole structure. It's set in constructor as default:
+</p>
+<pre>
+<code class="language-php">
+    $this->container = Html::el();
+</code>
+</pre>
+<p>This means, by default, there's no element. These classes all define method <strong>getContainerPrototype()</strong> to
+    bring possibility to change this <strong>$container</strong> (wrapper). With DefaultFormRenderer, you have to do something like this,
+    if you want setup this element:
+</p>
+<pre>
+<code class="language-php">
+    $container = $form['gender']->getContainerPrototype();
+    $container->setName('div');
+    $container->class('my-class');
+</code>
+</pre>
+<p>We were already talking about - there are specific Bootstrap 5 features (input groups, floating labels) which need
+    render different layout to work properly. Also, DefaultFormRenderer is almost 20 years old. What was "standard"
+    20 years ago, is deprecated nowadays. It involves how items in these classes are rendered. If you try
+    render this form with DefaultFormRenderer you can see it on our 'gender' RadioList:
+</p>
+<pre>
+<code class="language-html">
+    &#60;label&#62;
+        &#60;input type="radio" name="gender" required="" data-nette-rules="..." value="male"&#62;Muž
+    &#60;/label&#62;
+    &#60;br&#62;
+    &#60;label&#62;
+        &#60;input type="radio" name="gender" required="" value="female"&#62;Žena
+    &#60;/label&#62;
+</code>
+</pre>
+<p>I'm not sure if this even fits HTML5 standard. At least this doesn't fit
+    <a href="https://getbootstrap.com/docs/5.2/forms/checks-radios/">Bootstrap 5 checks and radios</a> layout. What
+    is even more important - this is not work of DefaultFormRenderer, this structure is completely created not by
+    renderer, but with <strong>getControl()</strong> method on control as described above.
+</p>
+<p>Nowadays we need render different structure of item's elements and labels. Fortunately, these control classes are
+    pre-prepared for this, having <strong>getControlPart($key)</strong> and <strong>getLabelPart($key)</strong>
+    methods for creating these html elements one-by-one. And it's exactly how Bootstrap5FormRenderer works with
+    this type of controls. It renders them manually, let Nette's classes for controls create only item element and label.
+</p>
+<div class="alert alert-success">
+    Bootstrap5FormRenderer renders <strong>RadioList</strong> and <strong>CheckboxList</strong> manually.
+    The property <strong>$container</strong> of these classes is always <strong>omitted</strong>! Instead of it, there is wrapper in <strong>$wrappers</strong>
+    representing it. It is different for different scenarios. If these controls <strong>are not in input group</strong>,
+    it is <strong class="text-nowrap">$wrappers['control']['list']</strong>. There is also wrapper for every <em>item</em> -
+    <strong class="text-nowrap">$wrappers['control']['listItem']</strong>. And, their <em>parent</em> element is specific, defined in
+    <strong class="text-nowrap">$wrappers['pair']['listContainer']</strong>.<br>
+</div>
+<div class="alert alert-info">
+    Bootstrap5FormRenderer brings four more options on control. It is <strong>'element'</strong> and <strong>'item'</strong>
+    for setting own wrapper, <strong>'.element'</strong> and <strong>'.item'</strong> to add classes into default 'element' or 'item' wrapper.
+    They have sense and works only on CheckboxList, RadioList and Checkbox, on other controls are omitted.
+</div>
+<p>I understand it's maybe a lot of theory on first chapter of introducing tutorial. But a lot of from how
+    Bootstrap5FormRenderer works were already explained, next chapters are way shorter, introducing mainly features.
+    If you catch at least that there are many new options on controls and groups, defining own wrapper, or, if starts
+    with '.', adding classes to some default wrapper, you are in. Next chapters you just use this knowledge.
+</p>
+<p>
+    We still haven't finished out form. I think in our case, where only two items are in RadioList, we can use <em>inline</em>
+    radios. Bootstrap 5 have <em>form-check-inline</em> class for it. <strong>$wrappers['pair']['listContainer']</strong>
+    is default parent wrapper for RadioList. It's default value is pre-prepared for lists with more items, and definitely
+    is not suitable for our inline plans. Easiest for us is not use it at all, by setting option
+    <strong>'parent'</strong> to <em>null</em>.
+</p>
+<p>
+    Element is, by default, defined in <strong class="text-nowrap">$wrappers['control']['listItem']</strong> and is
+    <em>null</em>. For our purpose, we define it with Bootstrap's <em>pt-md-2</em> class to make radios properly "inline"
+    with 'email' TextInput. Last thing we need is set class <em>form-check-inline</em> to item wrapper:
+</p>
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true);
+        $form->setRenderer($renderer);
+        $form['save']->setOption('groupCol', 'div class="col-12"');
+        $form['account']->setOption('row', true);
+        $form['note']->setOption('row', false)
+            ->setOption('.parent', 'd-flex flex-column h-100')
+            ->setOption('.control', 'flex-grow-1');
+        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['gender']->setCaption('Pohlaví')
+            ->setOption('parent', false)
+            ->setOption('element', 'div class="pt-md-2"')
+            ->setOption('item', 'div class="form-check form-check-inline"');
+        //------
+        return $form;
+    }
+</code>
+</pre>

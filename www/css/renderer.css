@@ -1,0 +1,6 @@
+.my-height {
+    height: calc(1.5em + 0.75rem + 2px);
+}
+.my-floating-label-height{
+    height: calc(3.5rem + 2px);
+}

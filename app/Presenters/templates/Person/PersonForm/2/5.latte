@@ -1,0 +1,70 @@
+{block content}
+<p>On md-+ screens, we have now better layout at the bottom of the PersonForm, but our 'note' textarea should
+    fill all empty space. Let's introduce some more options. You can always change control's element outside renderer, like:</p>
+<pre>
+<code class="language-php">
+    $control->getControlPrototype()->...
+</code>
+</pre>
+<p>If you want this, you will, in most cases, want to add or change some attribute. Very often add a class, I suppose.</p>
+<div class="alert alert-info">
+    <strong>$control->setOption('.control', $value)</strong> will add classes in <strong>$value</strong> ('class1 class2 ...') to the
+    <em>control element itself</em>. If a control have more elements (e.g. RadioList), this class(es) will be added to all of them.
+    In other words, everywhere is control's (or control's items) <em>name</em> attribute, there these class(es) will be added.
+</div>
+<p>This way we add 'flex-grow-1' class to our textarea:</p>
+<pre>
+<code class="language-php">
+    $form['note']->setOption('row', false)
+        ->setOption('.control', 'flex-grow-1');
+</code>
+</pre>
+<p>It is not easy implement all Bootstrap 5 form features - you need different <em>layout</em> for different scenarios.
+    Main differences are when you want use <em>input groups</em> and also <em>floating labels</em> (we'll talk about in next chapters).
+    If we don't yet, <strong>$wrappers['pair']['container']</strong> is our default <strong>parent</strong> wrapper for most controls.
+    It's simple <em>div</em> by default.
+</p>
+<p>Let's show how we can use it and some basics around. Maybe we want just add some classes:</p>
+<pre>
+<code class="language-php">
+    $form['note']->setOption('row', false)
+        ->setOption('.parent', 'd-flex flex-column h-100')
+        ->setOption('.control', 'flex-grow-1');
+</code>
+</pre>
+<div class="alert alert-info">
+    <strong>$control->setOption('.parent', $value)</strong> will add classes in $value ('class1 class2 ...') to the
+    <em>control's parent element</em>. If parent element is not set, it will be omitted. If parent element is set
+    by hand, through option 'parent', it is also omitted.
+</div>
+<p>Or maybe, in some other scenarios (we want cancel default classes), we could want change whole wrapper, so we can do too:</p>
+<pre>
+<code class="language-php">
+    $form['note']->setOption('row', false)
+        ->setOption('parent', 'div class="d-flex flex-column h-100"')
+        ->setOption('.control', 'flex-grow-1');
+</code>
+</pre>
+<div class="alert alert-info">
+    <strong>$control->setOption('parent', $value)</strong> will change default <em>parent wrapper</em> to wrapper
+    defined in <strong>$value.</strong>
+</div>
+<p>For now, we have this form:</p>
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm2_5() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true);
+        $form->setRenderer($renderer);
+        $form['save']->setOption("groupCol", 'div class="col-12"');
+        $form['account']->setOption('row', true);
+        $form['note']->setOption('row', false)
+            ->setOption('.parent', 'd-flex flex-column h-100')
+            ->setOption('.control', 'flex-grow-1');
+        //------
+        return $form;
+    }
+</code>
+</pre>

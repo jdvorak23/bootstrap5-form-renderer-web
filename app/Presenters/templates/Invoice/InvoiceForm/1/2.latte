@@ -1,0 +1,26 @@
+{block content}
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+
+<pre>
+<code class="language-php">
+    protected function getActionButton() : Html
+    {
+        return Html::el()->addHtml('
+                  &#60button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"&#62
+                    &#60span class="d-none d-sm-inline"&#62Action&#60/span&#62
+                  &#60/button&#62
+                  &#60ul class="dropdown-menu"&#62
+                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Action&#60/a&#62&#60/li&#62
+                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Another action&#60/a&#62&#60/li&#62
+                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Something else here&#60/a&#62&#60/li&#62
+                    &#60li&#62&#60hr class="dropdown-divider"&#62&#60/li&#62
+                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Separated link&#60/a&#62&#60/li&#62
+                  &#60/ul&#62
+        ');
+    }
+</code>
+</pre>

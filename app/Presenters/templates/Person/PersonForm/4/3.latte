@@ -1,0 +1,14 @@
+{block content}
+<p>We can  adjust some of our specific controls, set their max-width where is not needed more:</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<p>Better way is to define own <strong>style classes</strong> in this case, and then add them through option
+    <span class="code-string">'.control'</span>:</p>
+<pre>
+<code class="language-php">
+    $control->setOption('.control', 'my-width-class');
+</code>
+</pre>

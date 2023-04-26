@@ -1,0 +1,30 @@
+{block content}
+<ul class="list-group align-items-center">
+    <li class="col-12 col-md-8 col-lg-6 list-group-item list-group-item-info d-flex">
+        <span>Number of lines to code design:</span>
+        <span  class="ms-auto">{$codeLines}</span>
+    </li>
+    <li class="col-12 col-md-8 col-lg-6 list-group-item list-group-item-info d-flex">
+        <span>Number of lines for setting up renderer:</span>
+        <span  class="ms-auto">{$setupLines}</span>
+    </li>
+    <li n:if="$wrapperLines > 0" class="col-12 col-md-8 col-lg-6 list-group-item list-group-item-warning d-flex">
+        <span>Number of lines for setting up wrappers:</span>
+        <span  class="ms-auto">{$wrapperLines}</span>
+    </li>
+    <li class="col-12 col-md-8 col-lg-6 list-group-item list-group-item-success d-flex">
+        <span>Total lines of code to get this form from scratch:</span>
+        <span  class="ms-auto fw-bold">{$setupLines + $codeLines + $wrapperLines}</span>
+    </li>
+    <li n:class="('col-12 col-md-8 col-lg-6 list-group-item list-group-item-success')">
+        <div class="d-flex">
+            <span>Average lines needed to render one control:</span>
+            <span  n:class="$wrapperLines > 0 ?: fw-bold, ms-auto">{($setupLines + $codeLines + $wrapperLines) / $controls|number:2}<br></span>
+        </div>
+        <div n:if="$wrapperLines > 0" class="d-flex">
+            <span>After you set up your <strong>$wrappers</strong>:</span>
+            <span  class="ms-auto fw-bold">{($setupLines + $codeLines)  / $controls|number:2}</span>
+        </div>
+    </li>
+
+</ul>

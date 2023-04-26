@@ -1,0 +1,41 @@
+{block content}
+<p>Here we will introduce <a href="https://getbootstrap.com/docs/5.2/forms/floating-labels/" target="_blank">
+        Bootstrap5's floating labels</a>.</p>
+<ul>
+    <li>You can set them for whole <strong>form</strong> by setting constructor parameter <strong>$floatingLabels</strong> = <span class="code-value">true</span></li>
+    <li>You can set / reset them for whole <span class="code-name">ControlGroup</span> by setting option
+        <span class="code-string">'floatingLabels'</span> to <span class="code-value">true</span>|<span class="code-value">false</span></li>
+    <li>You can set / reset them for any <strong>control</strong> differently by setting option <span class="code-string">'floatingLabel'</span>
+        to <span class="code-value">true</span>|<span class="code-value">false</span> </li>
+</ul>
+<p>We would use our final form from previous chapter, just set constructor's parameter <strong>$floatingLabels</strong> = <span class="code-value">true</span>.</p>
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true, true);
+        $form->setRenderer($renderer);
+        $form['save']->setOption('groupCol', 'div class="col-12"');
+        $form['account']->setOption('row', true);
+        $form['note']->setOption('row', false)
+            ->setOption('.parent', 'd-flex flex-column h-100')
+            ->setOption('.control', 'flex-grow-1');
+        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
+        $form['gender']->setCaption('Pohlaví')
+            ->setOption('parent', false)
+            ->setOption('element', 'div class="pt-md-2"')
+            ->setOption('.item', 'form-check-inline');
+        //------
+        return $form;
+    }
+</code>
+</pre>
+<p>
+    You should play with it a little, try set floating labels differently for <span class="code-name">ControlGroup</span>
+    or for some single control.
+</p>

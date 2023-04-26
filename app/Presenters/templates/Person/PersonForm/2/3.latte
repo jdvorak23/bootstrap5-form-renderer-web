@@ -1,0 +1,68 @@
+{block content}
+<p>If you have at least md- screen, you can see grid :D</p>
+<p>By setting <strong>$rows = true</strong> in constructor, we set Group-level grid on every group by default.
+Group is defined in <strong class="text-nowrap">$wrappers['group']</strong> section like in DefaultFormRenderer,
+    with same wrappers named <span class="code-string">'container'</span>, <span class="code-string">'label'</span>,
+    <span class="code-string">'description'</span>. They work in same way. There are also two important new ones,
+    <span class="code-string fw-bold">'row'</span> and <span class="code-string fw-bold">'col'</span>.
+</p>
+
+<div class="alert alert-info">
+    <strong class="text-nowrap">$wrappers['group']['row'] </strong> is default wrapper for Group-level grid.<br>
+    <strong class="text-nowrap">$wrappers['group']['col'] </strong> is default wrapper for Group-level column.
+</div>
+<p><strong class="text-nowrap">$wrappers['group']['row']</strong> then will be child of
+    <strong class="text-nowrap">$wrappers['group']['container']</strong> wrapper (ordinary fieldset).
+    For every item in this <span class="code-string">'group row'</span>,
+    column wrapper <strong class="text-nowrap">$wrappers['group']['col']</strong> will be generated.</p>
+<p>This can be overwritten on every group, by setting:
+</p>
+<pre>
+<code class="language-php">
+    $group->setOption('row', $value)
+    $group->setOption('col', $value)
+</code>
+</pre>
+<p>When You set your own wrappers, like in this case - <strong>$value</strong> - it can ordinarily have these values:</p>
+<table class="table">
+    <tbody>
+    <tr>
+        <td><em>null</em></td><td>is default, and means default</td>
+    </tr>
+    <tr>
+        <td><em>false</em></td><td>this wrapper won't be generated</td>
+    </tr>
+    <tr>
+        <td><em>true</em> </td><td>this wrapper will be generated (default value from <strong>$wrappers</strong> array)</td>
+    </tr>
+    <tr>
+        <td><em>Html</em></td><td>Nette's <strong>Nette\Utils\Html</strong></td>
+    </tr>
+    <tr>
+        <td><em>string</em></td><td>which will be used as shorthand <strong>Html::el($value)</strong></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>We can try this, in this example setup:</p>
+
+<pre>
+<code class="language-php">
+    protected function createComponentPersonForm() : Form
+    {
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Renderer(true);
+        $form->setRenderer($renderer);
+        $form->getGroup('Person')
+            ->setOption('row', false);
+        $form->getGroup('Address')
+            ->setOption('col', 'div class="col-md-4"');
+        //------
+        return $form;
+    }
+</code>
+</pre>
+<p>Group <span class="code-name">Person</span> won't have grid, <span class="code-name">Address</span>
+    have other default <span class="code-string">'group col'</span>, set manually to
+    <span class="code-string">'div class="col-md-4"'</span>:</p>

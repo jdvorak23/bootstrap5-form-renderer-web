@@ -1,0 +1,29 @@
+<div class="d-flex justify-content-center">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        {foreach $forms->getForms() as $index => $description}
+            <li class="nav-item" role="presentation">
+                <a n:href="'this', 'id' => $index" class="text-decoration-none"><button n:class="nav-link, $index == $forms->getActiveIndex() ? active" type="button">{$index}</button></a>
+            </li>
+        {/foreach}
+    </ul>
+</div>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane show active">
+        <div style="max-width: 992px" class="m-auto mt-3">
+            {foreach $forms->getActiveChapter() as $form}
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h5 class="mb-3">{ucfirst($form->getCaption())}</h5>
+                        {if $form->getTemplateFile() !== null}
+                            {include $form->getTemplateFile(), form: $form}
+                        {/if}
+                    </div>
+                    <div class="card-body mx-4">
+                        {control {$form->getName()}}
+                    </div>
+                </div>
+            {/foreach}
+        </div>
+    </div>
+</div>
