@@ -16,7 +16,7 @@ Vendor is not attached, you have to (in project folder):
 composer update
 ```
 
-Nette needs full access to folders /log and /temp, on linux you need probably (in this project folder):
+Nette needs full access to folders /log and /temp, on linux you need probably (in project folder):
 
 ```sh
 chmod -R a+rw temp log
