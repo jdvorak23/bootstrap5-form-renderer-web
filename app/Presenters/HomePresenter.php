@@ -22,7 +22,8 @@ final class HomePresenter extends Nette\Application\UI\Presenter
     protected function startup(): void
     {
         parent::startup();
-        $this->redirect("Person:form", ['id' => 1]);
+        if($this->getAction() !== 'test')
+            $this->redirect("Person:form", ['id' => 1]);
     }
 
     protected function createComponentTestForm() : Form
