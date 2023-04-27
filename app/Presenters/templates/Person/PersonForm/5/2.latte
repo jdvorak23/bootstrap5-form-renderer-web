@@ -1,0 +1,17 @@
+{block content}
+<p>
+    We would use form from previous chapter. We set <strong>floating labels</strong> to <span class="code-value">true</span>.
+    We just adjust our max-width to be suitable for floating labels. Again, I remind this is for demonstrating purpopses,
+    instead of setting styles is better to define classes with this max-width and then add them to control
+    (howto in previous chapter).
+</p>
+<p>
+    <strong>$wrappers['form']['container']</strong> is ordinary <span class="code-value">null</span>, but in this case
+    we can use it to add container for form max-width and card-like border around. This is very easy and straightforward,
+    just set properly input groups and if the field shouldn't grow, set max-width:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

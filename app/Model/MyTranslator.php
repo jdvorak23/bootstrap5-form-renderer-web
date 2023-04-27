@@ -14,7 +14,7 @@ class MyTranslator implements Translator
     private array $table;
     public function __construct()
     {
-        $this->table = parse_ini_file(self::file);
+        $this->table = parse_ini_file(self::file, false, INI_SCANNER_RAW);
     }
     /**
      * Translates the given string.

@@ -355,9 +355,10 @@ class PersonPresenter extends BaseFormPresenter
     protected function createComponentPersonForm5_1() : Form
     {
         $formWrapper = $this->formPreparator->getForm(__FUNCTION__);
-        $formWrapper->setCaption('Input groups and floating labels.');
+        $formWrapper->setCaption('Input groups and floating labels, translations.');
 //------//------
         $form = $this->personFormFactory->create();
+        $translator = $form->getTranslator();
         //------Renderer Setup
         $renderer = new Bootstrap5FormRenderer(true, true);
         $form->setRenderer($renderer);
@@ -366,9 +367,9 @@ class PersonPresenter extends BaseFormPresenter
         $form['first_name']->setOption("inputGroup", true);
         $form['gender']->setOption("element", 'div class="flex-column flex-sm-row align-items-start align-items-sm-center gap-0 gap-sm-2 input-group-text list-element rounded-0 rounded-end" style="height: calc(3.5rem + 2px);"');
         $descLarge = Html::el('div class="input-group-text rounded-end d-none d-sm-flex"')
-            ->addText('jen číslo, nebo + a číslo');
+            ->addText($translator->translate('only number, or + and number'));
         $descSmall = Html::el('div class="input-group-text rounded-end d-sm-none"')
-            ->addText('(+) a číslo');
+            ->addText('(+) ' . $translator->translate('and number'));
         $form['phone']->setOption('description', Html::el()->addHtml($descLarge)->addHtml($descSmall));
         $form['email']->setOption("inputGroup", true);
         $form['nick']->setOption('wrapper', 'div style="width:40%"');
@@ -386,8 +387,80 @@ class PersonPresenter extends BaseFormPresenter
             ->setOption("wrapper", 'div');
         $form['note']->setOption("inputGroup", false)
             ->setHtmlAttribute("style", "height:6.5em;");
+        $form['agree']->setOption('groupCol', 'div class="col-12 mt-0"');
         $form['save']->setOption('groupCol', false);
-        $form->getGroup('Others')->setOption('row', 'div class="row mt-0 gy-3"');
+        //------
+        return $form;
+    }
+    protected function createComponentPersonForm5_2() : Form
+    {
+        $formWrapper = $this->formPreparator->getForm(__FUNCTION__);
+        $formWrapper->setCaption('Input groups and floating labels.');
+//------//------
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Bootstrap5FormRenderer(true, true);
+        $form->setRenderer($renderer);
+        $renderer->wrappers['group']['col'] = 'div class="col-12"';
+        $renderer->wrappers['form']['container'] = 'div class="m-auto border border-1 p-3 rounded" style="max-width:575px;"';
+        $form['first_name']->setOption("inputGroup", true);
+        $form['email']->setOption("inputGroup", true);
+        $form['nick']->setOption('wrapper', 'div style="width:40%"');
+        $form['phone']->setOption("inputGroup", true);
+        $form['street']->setOption("inputGroup", true);
+        $form['street_number']->setOption("wrapper", 'div')
+            ->setHtmlAttribute("style", "max-width:7em;");
+        $form['house_number']->setOption("wrapper", 'div')
+            ->setHtmlAttribute("style", "max-width:7em;");
+        $form['city']->setOption("inputGroup", true);
+        $form['zip']->setHtmlAttribute("style", "max-width:9em;")
+            ->setOption("wrapper", 'div');
+        $form['account']->setOption("inputGroup", true);
+        $form['bank']->setHtmlAttribute("style", "max-width:10em;")
+            ->setOption("wrapper", 'div');
+        $form['note']->setOption("inputGroup", false)
+            ->setHtmlAttribute("style", "height:6.5em;");
+        $form['save']->setOption('groupCol', false);
+        //------
+        return $form;
+    }
+    protected function createComponentPersonForm5_3() : Form
+    {
+        $formWrapper = $this->formPreparator->getForm(__FUNCTION__);
+        $formWrapper->setCaption('Input groups and floating labels. Translations.');
+//------//------
+        $form = $this->personFormFactory->create();
+        //------Renderer Setup
+        $renderer = new Bootstrap5FormRenderer(true, true);
+        $form->setRenderer($renderer);
+        $renderer->wrappers['group']['col'] = 'div class="col-12"';
+        $renderer->wrappers['form']['container'] = 'div class="m-auto border border-1 p-3 rounded" style="max-width:575px;"';
+        $form['first_name']->setOption("inputGroup", true);
+        $form['gender']->setOption("element", 'div class="flex-column flex-sm-row align-items-start align-items-sm-center gap-0 gap-sm-2 input-group-text list-element rounded-0 rounded-end" style="height: calc(3.5rem + 2px);"');
+        $translator = $form->getTranslator();
+        $descLarge = Html::el('div class="input-group-text rounded-end d-none d-sm-flex"')
+            ->addText($translator->translate('only number, or + and number'));
+        $descSmall = Html::el('div class="input-group-text rounded-end d-sm-none"')
+            ->addText('(+) ' . $translator->translate('and number'));
+        $form['phone']->setOption('description', Html::el()->addHtml($descLarge)->addHtml($descSmall));
+        $form['email']->setOption("inputGroup", true);
+        $form['nick']->setOption('wrapper', 'div style="width:40%"');
+        $form['phone']->setOption("inputGroup", true);
+        $form['street']->setOption("inputGroup", true);
+        $form['street_number']->setOption("wrapper", 'div')
+            ->setHtmlAttribute("style", "max-width:7em;");
+        $form['house_number']->setOption("wrapper", 'div')
+            ->setHtmlAttribute("style", "max-width:7em;");
+        $form['city']->setOption("inputGroup", true);
+        $form['zip']->setHtmlAttribute("style", "max-width:9em;")
+            ->setOption("wrapper", 'div');
+        $form['account']->setOption("inputGroup", true);
+        $form['bank']->setHtmlAttribute("style", "max-width:10em;")
+            ->setOption("wrapper", 'div');
+        $form['note']->setOption("inputGroup", false)
+            ->setHtmlAttribute("style", "height:6.5em;");
+        $form['agree']->setOption('groupCol', 'div class="col-12 mt-0"');
+        $form['save']->setOption('groupCol', false);
         //------
         return $form;
     }

@@ -27,7 +27,7 @@ class PersonFormFactory
         $form->addText('nick', 'Nickname')
             ->setRequired('Choose your nickname.');
         $form->addText('phone', 'Phone')
-            ->setOption("description", "Only number, or + and number")
+            ->setOption("description", "only number, or + and number")
             ->addRule($form::PATTERN, 'Invalid phone number format.', '^(\+[0-9]*|[0-9]*)$')
             ->setRequired('Phone is required.');
 
