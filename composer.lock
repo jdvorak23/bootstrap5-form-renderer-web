@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e2de8e9df6515eb8780831ff35e1bc5",
+    "content-hash": "b24e710cfea1eda577fe6074a2478323",
     "packages": [
         {
             "name": "latte/latte",
@@ -1384,6 +1384,55 @@
     ],
     "packages-dev": [
         {
+            "name": "jdvorak23/bootstrap5-form-renderer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jdvorak23/bootstrap5-form-renderer.git",
+                "reference": "985cb25875819e618b5c2ef390cbb32277966985"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jdvorak23/bootstrap5-form-renderer/zipball/985cb25875819e618b5c2ef390cbb32277966985",
+                "reference": "985cb25875819e618b5c2ef390cbb32277966985",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jdvorak23\\Bootstrap5FormRenderer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Dvořák",
+                    "email": "dvorakj3@post.cz",
+                    "homepage": "http://www.jan-dvorak.cz",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Bootstrap5 form renderer for Nette",
+            "homepage": "https://github.com/jdvorak23/bootstrap5-form-renderer",
+            "keywords": [
+                "form",
+                "nette",
+                "renderer"
+            ],
+            "support": {
+                "issues": "https://github.com/jdvorak23/bootstrap5-form-renderer/issues",
+                "source": "https://github.com/jdvorak23/bootstrap5-form-renderer/tree/master"
+            },
+            "time": "2023-04-27T16:25:30+00:00"
+        },
+        {
             "name": "nette/tester",
             "version": "v2.5.0",
             "source": {
@@ -1522,7 +1571,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "jdvorak23/bootstrap5-form-renderer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

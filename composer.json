@@ -22,7 +22,8 @@
     },
 	"require-dev": {
 		"nette/tester": "^2.4",
-		"symfony/thanks": "^1"
+		"symfony/thanks": "^1",
+		"jdvorak23/bootstrap5-form-renderer": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
