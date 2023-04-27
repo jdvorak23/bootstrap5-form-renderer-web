@@ -27,7 +27,7 @@ abstract class BaseFormPresenter extends Presenter
 
     }
 
-    protected function actionForm($id = null)
+    public function actionForm($id = null)
     {
 
     }
