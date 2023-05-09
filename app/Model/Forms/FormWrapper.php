@@ -11,15 +11,13 @@ class FormWrapper
     const headerEnd = '//------//------';
     const setupLines = [
         'renderer = new',
-        'setRenderer'
+        'setRenderer',
+        'new Designer',
+        '$renderer->wrappers = new'
     ];
     const wrapperLines = [
         'renderer->wrappers',
     ];
-
-    protected string $maxWidth = '992px';
-    //protected string $name;
-    protected string $caption;
 
     protected int $codeLines;
     protected int $setupLines;
@@ -29,9 +27,8 @@ class FormWrapper
                                 protected string      $baseName,
                                 protected string|null $templateFile,
                                 protected array       $formFactoryCode,
-                                protected Presenter   $presenter)
+                                protected string|null $caption)
     {
-        //bdump($this->name);
     }
 
     public function getFactoryMethod(): string
@@ -61,23 +58,12 @@ class FormWrapper
 
     public function getCaption(): string
     {
-        $this->presenter[$this->name];
         return $this->caption ?? $this->name;
     }
 
     public function setCaption(string $caption): void
     {
         $this->caption = $caption;
-    }
-
-    public function getMaxWidth() : string
-    {
-        return $this->maxWidth;
-    }
-
-    public function setMaxWidth(string $maxWidth) : void
-    {
-        $this->maxWidth = $maxWidth;
     }
 
     public function setTemplateFile(string|null $templateFile) : void

@@ -84,11 +84,41 @@ class FormPreparator
             $this->activeChapter = $id;
             return;
         }
+        // Pokud nebylo nalezeno, může id být název kapitoly (nebo název první sub-kapitoly)
+        foreach ($this->forms as $key => $value){
+            $caption = is_array($value) ? reset($this->forms[$key])->getCaption() : $value->getCaption();
+            $url = $this->getUrlFromCaption($caption);
+            if($url == $id){
+                $this->activeChapter = $key;
+                return;
+            }
+        }
         // Pokud stále není nalezeno, $id ukazuje na neexistující formulář. V tom případě přesměruje na první existující.
         reset($this->forms);
         $this->presenter->redirect('this', ['id' => key($this->forms)]);
     }
 
+    protected function getUrlFromCaption($caption)
+    {
+        $caption = strtolower(trim($caption));
+        return str_replace(' ','-', $caption);
+    }
+    public function getChapters() : array
+    {
+        $chapters = [];
+        foreach ($this->forms as $key => $value){
+            $caption = is_array($value) ? reset($this->forms[$key])->getCaption() : $value->getCaption();
+            $chapters[$key] = ['caption' => $caption, 'url' => $this->getUrlFromCaption($caption)];
+        }
+        return $chapters;
+    }
+
+    public function getFormName(){
+        return $this->baseFormName;
+    }
+
+
+    //todo deprec
     public function getForms() : array
     {
         $forms = [];
@@ -96,6 +126,9 @@ class FormPreparator
             $forms[$key] = is_array($value) ? $value : [$value];
         return $forms;
     }
+    // Used in template
+
+
     public function getForm($factoryName) : FormWrapper|null
     {
         $indexes = $this->getFormIndexes($factoryName);
@@ -117,7 +150,7 @@ class FormPreparator
     protected function setTemplatesDir() : void
     {
         $template = $this->presenter->formatTemplateFiles()[0];
-        $this->templatesDir = dirname($template) . '/' . ucfirst($this->baseFormName);
+        $this->templatesDir = dirname($template) . 'FormPreparator.php/' . ucfirst($this->baseFormName);
     }
 
     protected function setClassCodeLines(ReflectionClass $presenterReflection) : void
@@ -138,11 +171,12 @@ class FormPreparator
     }
     protected function createFormWrapper(array $indexes, ReflectionMethod $formFactoryMethod) : FormWrapper
     {
+        $caption = isset($formFactoryMethod->getStaticVariables()['caption']) ? (string) $formFactoryMethod->getStaticVariables()['caption']  : null;
         return new FormWrapper($this->baseFormName . implode("_", $indexes),
                                             $this->baseFormName,
                                             $this->getFormTemplateFile($indexes),
                                             $this->getFormFactoryCode($formFactoryMethod),
-                                            $this->presenter);
+                                            $caption);
     }
     protected function getFormFactoryCode(ReflectionMethod $formFactoryMethod) : array
     {

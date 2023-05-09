@@ -1,66 +1,129 @@
-function getValidationElements(element, form) {
-    const feedback = 'invalid-feedback';
-    const elements = { element : element, parent : null, error : null, container : null };
-    let sibling = element;
+// This script needs https://github.com/nette/forms/blob/master/src/assets/netteForms.js to work
+/**
+ * Classes used for validation.
+ */
+Nette.validationClasses = {
+    errorContainer : 'invalid-feedback',
+    listContainer: 'list-element',
+    valid: 'is-valid',
+    invalid: 'is-invalid'
+}
+/**
+ * Finds elements essential for validation.
+ * @param controlElement
+ * @param form
+ * @returns {{container: null, parent: null, error: null, element}}
+ */
+Nette.getValidationElements = function(controlElement, form) {
+    const elements = {
+        element : controlElement,
+        parent : null,
+        error : null,
+        container : null
+    };
+    // Tries to find element with errorContainer class
+    // If not in siblings, try parent siblings etc. Also saves 'parent' element (the real sibling)
+    let sibling = controlElement;
     while(!elements.error && sibling !== form) {
-        if(sibling.classList.contains(feedback)) {
+        if(sibling.classList.contains(Nette.validationClasses.errorContainer)) {
             elements.error = sibling;
             continue;
         }
         if(!sibling.nextElementSibling){
+            elements.parent = sibling.parentElement;
             sibling = sibling.parentElement;
-            elements.parent = sibling;
         }else
             sibling = sibling.nextElementSibling;
     }
-    if(element.id){
-        let parent = element.parentElement;
-        while(parent !== form) {
-            if(parent.classList.contains('list-element')){
-                elements.container = parent;
-                return elements;
-            }
-            parent = parent.parentElement;
+
+    if(!(controlElement.type in {radio: 1, checkbox: 1}))
+        return elements;
+
+    // If radio or checkbox, tries to find deep parent with class listContainer
+    let parent = controlElement.parentElement;
+    while(parent !== form) {
+        if(parent.classList.contains(Nette.validationClasses.listContainer)){
+            elements.container = parent;
+            return elements;
         }
+        parent = parent.parentElement;
     }
     return elements;
 }
-function setValidationElements(elements, isValid, message = ''){
-    const valid = 'is-valid';
-    const invalid = 'is-invalid';
+/**
+ * Adds / removes classes based on parameter isValid
+ */
+Nette.setValidationClasses = function (element, isValid){
+    element.classList.add(isValid ? Nette.validationClasses.valid : Nette.validationClasses.invalid)
+    element.classList.remove(isValid ? Nette.validationClasses.invalid : Nette.validationClasses.valid);
+}
+/**
+ * Sets elements essential for validation and error message
+ * @param elements
+ * @param isValid
+ * @param message
+ */
+Nette.setValidationElements = function(elements, isValid, message = ''){
+    const valid = Nette.validationClasses.valid;
+    const invalid = Nette.validationClasses.invalid;
     if(elements.error){
-        if(elements.error.firstElementChild)
+        if(elements.error.firstElementChild) {
+            // If there is more error elements, all but not first are removed
+            for(let i= 1; i < elements.error.children.length; i++)
+                elements.error.children[i].remove();
             elements.error.firstElementChild.innerText = message;
+        }
         else
             elements.error.innerText = message;
-
-        if(elements.parent) {
-            elements.parent.classList.add(isValid ? valid : invalid);
-            elements.parent.classList.remove(isValid ? invalid : valid);
-        }
+        // Sets parent element, if error container exists
+        if(elements.parent)
+            Nette.setValidationClasses(elements.parent, isValid);
     }
-    elements.element.classList.add(isValid ? valid : invalid);
-    elements.element.classList.remove(isValid ? invalid : valid);
-    if(elements.container){
-        elements.container.classList.add(isValid ? valid : invalid);
-        elements.container.classList.remove(isValid ? invalid : valid);
-    }
+    // Sets control element
+    Nette.setValidationClasses(elements.element, isValid);
+    // Sets radios or checkbox container, if any
+    if(elements.container)
+        Nette.setValidationClasses(elements.container, isValid);
 }
-function resetErrors(form){
+/**
+ * Sets all validable controls in form  as valid
+ * @param form
+ */
+Nette.setAllControlsValid = function(form){
     for (let i = 0; i < form.elements.length; i++){
-        const elements = getValidationElements(form.elements[i], form);
-        setValidationElements(elements, true);
+        const element = form.elements[i];
+        if (!(element.tagName.toLowerCase() in {input: 1, select: 1, textarea: 1})
+            || element.type in {hidden: 1, button: 1, image: 1, submit: 1, reset: 1})
+            continue;
+        const elements = Nette.getValidationElements(element, form);
+        Nette.setValidationElements(elements, true);
     }
 }
+/**
+ * Resets validation for all controls in form
+ * @param form
+ */
+Nette.resetValidation = function (form) {
+    [...form.querySelectorAll('.' + Nette.validationClasses.valid)].forEach(element => {
+        element.classList.remove(Nette.validationClasses.valid);
+    });
+    [...form.querySelectorAll('.' + Nette.validationClasses.invalid)].forEach(element => {
+        element.classList.remove(Nette.validationClasses.invalid);
+    });
+}
+/**
+ * Rewritten to set Bootstrap 5 validation classes and append error message
+ * @param form
+ * @param errors
+ */
 Nette.showFormErrors = function(form, errors) {
-    resetErrors(form);
+    Nette.setAllControlsValid(form);
     let focusElem;
     for (let i = 0; i < errors.length; i++) {
         const element = errors[i].element;
         const message = errors[i].message;
-
-        const elements = getValidationElements(element, form);
-        setValidationElements(elements, false, message);
+        const elements = Nette.getValidationElements(element, form);
+        Nette.setValidationElements(elements, false, message);
 
         if (!focusElem && element.focus)
             focusElem = element;
@@ -69,25 +132,19 @@ Nette.showFormErrors = function(form, errors) {
         focusElem.focus();
 };
 
+/**
+ * Set reset event of forms to reset validation
+ */
 window.addEventListener('DOMContentLoaded', (event) => {
-    const resetButtons = document.querySelectorAll('[type="reset"]');
-    [...document.querySelectorAll('[type="reset"]')].forEach(resetButton => {
-        const form = resetButton.form;
-        if(form){
-            resetButton.addEventListener('click', () => {
-                [...form.querySelectorAll('.is-valid')].forEach(element => {
-                    element.classList.remove('is-valid');
-                });
-                [...form.querySelectorAll('.is-invalid')].forEach(element => {
-                    element.classList.remove('is-invalid');
-                });
-            });
-        }
+    [...document.querySelectorAll('form')].forEach(form => {
+        form.addEventListener('reset', () => {
+            Nette.resetValidation(form);
+        });
     });
 });
 
 /**
- * Validates whole form.
+ * Just needed comment a few lines in the middle to solve radios. Yes I am lazy.
  */
 Nette.validateForm = function(sender, onlyCheck) {
     var form = sender.form || sender,
@@ -114,7 +171,12 @@ Nette.validateForm = function(sender, onlyCheck) {
             continue;
 
         }
-
+      /*  else if (elem.type === 'radio') {
+            if (radios[elem.name]) {
+                continue;
+            }
+            radios[elem.name] = true;
+        }*/
         if ((scope && !elem.name.replace(/]\[|\[|]|$/g, '-').match(scope)) || Nette.isDisabled(elem)) {
             continue;
         }
