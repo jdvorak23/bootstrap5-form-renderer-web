@@ -1,4 +1,20 @@
-<?php
+{block footer}
+    <div class="card-footer">
+        <p class="mt-2">
+            Just small use case:
+        </p>
+        <ul>
+            <li>Required suffix</li>
+            <li>Nette <a href="https://doc.nette.org/en/forms/validation#toc-dynamic-javascript" target="_blank">form toggle</a></li>
+            <li>Input group used for attaching button-like description</li>
+            <li>Proper Designer use with form Container</li>
+            <li>Html factory as template for design TextAreas</li>
+        </ul>
+        <p>
+            Form factory:
+        </p>
+<pre>
+<code class="language-php">
 
 namespace App\Forms;
 
@@ -84,3 +100,30 @@ final class BookingFormFactory
         return $form;
     }
 }
+</code>
+</pre>
+        <p>
+            Factory method:
+        </p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<pre>
+<code class="language-php">
+protected function getTextAreaFactory(): HtmlFactory
+{
+    return new HtmlFactory(
+        Designer::control()->setGrid(false)
+            ->setParentClasses('d-flex flex-column h-100')
+            ->setControlClasses('flex-grow-1 textarea-default-height')
+            ->setInputGroup(false)
+    );
+}
+</code>
+</pre>
+    </div>
+{/block}
+{block content}
+{control codeLines $form}

@@ -1,7 +1,7 @@
 {
 	"name": "jdvorak23/bootstrap5-form-renderer-web",
 	"description": "Tutorial and test forms for Bootstrap5FormRenderer",
-	"keywords": ["nette"],
+	"keywords": ["nette", "form", "renderer", "bootstrap"],
 	"type": "project",
 	"license": ["MIT", "BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 	"require": {
@@ -18,12 +18,12 @@
 		"nette/security": "^3.1",
 		"nette/utils": "^4.0",
 		"latte/latte": "^3.0",
-		"tracy/tracy": "^2.9"
+		"tracy/tracy": "^2.9",
+		"jdvorak23/bootstrap5-form-renderer": "*"
     },
 	"require-dev": {
 		"nette/tester": "^2.4",
-		"symfony/thanks": "^1",
-		"jdvorak23/bootstrap5-form-renderer": "dev-master"
+		"symfony/thanks": "^1"
 	},
 	"autoload": {
 		"psr-4": {

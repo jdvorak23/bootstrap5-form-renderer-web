@@ -1,0 +1,94 @@
+{block footer}
+<div class="card-footer">
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<p>
+    And our own renderer, <span class="code-name">ResponsiveFloating</span>. We use own HtmlFactory, create it and append
+    in constructor:
+</p>
+<pre>
+<code class="language-php">
+
+namespace App\Model;
+
+use Jdvorak23\Bootstrap5FormRenderer\HtmlFactory;
+use Jdvorak23\Bootstrap5FormRenderer\Renderers\ControlRenderers\FloatingControlRenderer;
+use Nette\Utils\Html;
+
+class ResponsiveFloating extends FloatingControlRenderer
+{
+    public function __construct()
+    {
+        // As a starter we use our responsive input group wrappers.
+        $htmlFactory = new HtmlFactory(null, new InputGroupWrappers());
+        // Description container - we add classes for breakpoint height a display
+        $htmlFactory->wrappers['description']['inputGroupItem'] = 'div class="input-group-text input-group-sm-height d-none d-sm-flex"';
+        // Second description, which is not in input group, with display breakpoint classes
+        $htmlFactory->wrappers['description']['item'] = 'small class="ms-1 d-inline-block d-sm-none"';
+        // Adjust of margin
+        $htmlFactory->wrappers['inputGroup']['.wrapper'] = 'mb-2';
+        // We use our breakpoint height also for control. On sm breakpoint, the effect of floating label control is removed by this
+        $htmlFactory->wrappers['control']['.all'] = 'input-group-sm-height py-sm-0';
+        parent::__construct($htmlFactory);
+    }
+
+    protected function renderToGroup(Html $container): void
+    {
+        $this->renderInputGroupWrapper();
+        // At first, we render elements like "they are not with floating labels"
+        $this->floatingLabel = false;
+        // Grandparent or daddy, out of names :D Contains first (input group) label and parent
+        // We need it exactly to be like a parent of standard input group, so we use it
+        $grandParent = $this->parent;
+        // Add manually our element to the input group wrapper
+        $this->inputGroupWrapper->addHtml($grandParent);
+        // Render label to it
+        $this->renderLabel($grandParent);
+        // Set breakpoint display classes
+        $this->label->setClasses('d-none d-sm-flex');
+        // We have used parent and label, we would like to use them again.
+        // So we need to "reset" them - set them null is the best.
+        // $inputGroupWrapper, $parent, $label and $element are always created when used, it will be created again
+        //  with other rules
+        $this->label = null;
+        $this->parent = null;
+        // Now we render elements with floating labels, this way everything is set properly
+        $this->floatingLabel = true;
+        // Render real parent to our grand parent
+        $this->renderParent($grandParent);
+        // Then label
+        $this->renderLabel($this->parent);
+        // Apply breakpoint displaying
+        $this->label->setClasses('d-flex d-sm-none');
+        // We render description for input group
+        $this->renderDescription($this->parent);
+        // We set input group off, other description will be rendered as not being in input group as we need
+        $this->isInputGroup = false;
+        // Description doesn't have its element, we do not need to reset, always created new
+        $this->renderDescription($this->inputGroupWrapper);
+        // Feedback standard rendering
+        $this->renderFeedback($this->inputGroupWrapper);
+        // is-valid and is-invalid classes are rendered to parent, but with our layout we need them
+        // propagate to our $grandParent, or feedback wouldn't show when server side validation.
+        // On client side it is ok, javascript handles it
+        $this->setFeedbackClasses($grandParent, '.parent');
+    }
+    // Setup copied from parent method. Just no check if floating label is set, because we need it always
+    protected function setRenderer(): void
+    {
+        parent::setRenderer();
+        if (is_object($this->control->control) && !array_key_exists("placeholder", $this->control->control->attrs))
+            $this->control->setHtmlAttribute("placeholder", $this->control->getCaption());
+    }
+}
+</code>
+</pre>
+</div>
+{/block}
+{block content}
+<p>
+    Try what happens when you resize screen.
+</p>
