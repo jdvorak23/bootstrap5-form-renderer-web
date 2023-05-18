@@ -1,0 +1,20 @@
+{block content}
+<p>
+    You maybe noticed that our <span class="code-string">'phone'</span> control is again in small problem. The validation
+    message is in new line under description. Maybe we want it in same line. Description wrapper is already prepared for
+    this, because it is <em>span</em> by default. <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#feedback-messages" target="_blank">Validation feedback wrappers</a> are not. We just need
+    to change one field, so we can use an option for it. We will set it for both, valid and error containers. We need add
+    a class <span class="code-string">d-inline</span> to it.
+</p>
+<pre>
+<code class="language-php">
+$design('phone')->setValidContainerClasses('d-inline')
+    ->setErrorContainerClasses('d-inline');
+</code>
+</pre>
+
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

@@ -1,66 +1,61 @@
 {block content}
-<p>Let's back to our goal. At bottom of the form, we can see our buttons are in
-    <span class="code-string">'col-md-6'</span>, that's not what we want,
-    we want them centered in the middle. For Group-level grid, it makes sense to have also some option on the control level,
-    at least for defining single different <span class="code-string">'group col'</span> wrapper - option
-    <strong class="code-string">'groupCol'</strong> on a control. For our PersonForm, we have two possibilities:
-</p>
+<p>There are <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Constructor" target="_blank">5 constructor parameters</a>,
+    and everything else is made by various <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Options" target="_blank">options</a> on control or group,
+just like in previous example. There is a reference, but still it would be endless searching what is what.</p>
+<p>It's why there are <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders" target="_blank">builders</a>,
+    where every option have its method - and IDE would whisper and everything run faster.</p>
+
+<p>We can try on our form. Just import <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders#designer" target="_blank">Designer</a> class and create instance:</p>
 <pre>
 <code class="language-php">
-    $form['save']->setOption('groupCol', 'div class="col-12"');
-    // Or
-    $form['save']->setOption('groupCol', false);
+use Jdvorak23\Bootstrap5FormRenderer\Designers\Designer;
+$design = new Designer($form);
 </code>
 </pre>
-<p>First solution makes this single <span class="code-string">'group col'</span> as
-    <span class="code-string">'div class="col-12"'</span>, it will have 100% width on all screens,
-            second even simplest solution - set it to false, then default <span class="code-string">'group col'</span>> is not generated.</p>
-<p>Maybe you wonder why there aren't two <span class="code-string">'group col'</span> wrappers, one for each button.
-    It works very similar as DefaultFormRenderer - buttons, which are next to each other, are rendered to one same
-    wrapper defined in <strong>$wrappers['controls']['buttons']</strong>.
+
+And we can start with bottom of the form. Our buttons are in default <span class="code-string">'group col'</span> wrapper
+<span class="code-string">'col-md-6'</span>,
+that's not what we want, we want them centered in the middle. For Group-level grid,
+it makes sense to have also some option on the control level,
+at least for defining single different <span class="code-string">'group col'</span> wrapper - option
+<a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#groupcol" target="_blank">groupCol</a> on a control. But we use Designer from now:
+
+<pre>
+<code class="language-php">
+$design('save')->setGroupColumn('div class="col-12"');
+</code>
+</pre>
+
+<p>
+    We have chosen <span class="code-string">save</span> submit button and set group column specifically for it on
+    <span class="code-string">'div class="col-12"'</span> wrapper.
 </p>
 <p>
-    In both grids, this button wrapper is taken and processed as one item. This button wrapper is created only if buttons
-    are not part of the input group, but this is topic of next chapters.</p>
+    <span class="code-name">Designer</span> have methods for creating builders - like <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders#__invoke" target="_blank">__invoke()</a>
+    we have used. By this method you can quickly select <strong>one or more controls</strong> (divided by space).
+</p>
 <p>
-    We handled buttons, now we need do something with controls in <span class="code-name">Others</span> Group. There are two text inputs
-    and textarea, on md-+ screens we have useless space right from textarea and that doesn't look well.
+    It also have method <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders#all" target="_blank">all()</a>,
+    which could be used to select <strong>controls</strong> based on given criteria.
 </p>
-<p>That's exactly case we can use the second grid system - it is defined only on controls, by
-    <strong class="code-string">'row'</strong> and <strong class="code-string">'col'</strong> options.
-    You <em>start</em> it on some control by setting <span class="code-string">'row'</span> option, and then renderer
-    automatically add every next item to it, until you end it by setting <span class="code-string">'row'</span>
-    option on some next control, or until end of the Group.
+<p>
+    Other Designer method <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders#group" target="_blank">group()</a>
+    is for selecting <strong>one ControlGroup</strong> by its caption or int index.
 </p>
-<p>Lets show an example on our PersonForm:</p>
+<p>
+    These methods returns instance of builder (either for control, group, or for multiple controls),
+    we can immediately start to make our design.
+</p>
+<p>
+    When you write <code class="language-php">$design('save')-></code> and start write something like
+    <code class="language-php">$design('save')->column</code>, IDE should whispers you possibilities. By this way and few
+    examples, it is quite easy to learn basic and start use renderer:
+</p>
 <pre>
 <code class="language-php">
-    $form['account']->setOption('row', true);
-    $form['note']->setOption('row', false)
+{$form->getFactoryMethod()}
 </code>
 </pre>
-<p>We set grid start on control <span class="code-string">'account'</span>, <em>true</em> means default wrapper.
-    We haven't specified <span class="code-string">'col'</span>, then default one is taken.</p>
-<div class="alert alert-info">
-    <strong>$wrappers['controls']['row'] </strong> is default wrapper for Control-level grid.<br>
-    <strong>$wrappers['controls']['col'] </strong> is default wrapper for Control-level column.
-</div>
-<p>Our <span class="code-string">'note'</span> textarea shouldn't be in grid, so we set <span class="code-string">'row'</span>
-    to <em>false</em>, ended previous grid.</p>
-<p>Now we already have this:</p>
-<pre>
-<code class="language-php">
-    protected function createComponentPersonForm() : Form
-    {
-        $form = $this->personFormFactory->create();
-        //------Renderer Setup
-        $renderer = new Renderer(true);
-        $form->setRenderer($renderer);
-        $form['save']->setOption('groupCol', false);
-        $form['account']->setOption('row', true);
-        $form['note']->setOption('row', false);
-        //------
-        return $form;
-    }
-</code>
-</pre>
+
+
+

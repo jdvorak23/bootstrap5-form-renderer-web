@@ -1,0 +1,77 @@
+{block content}
+<p>
+    Now, there are only three problems remaining. Our <span class="code-string">'gender'</span> and
+    <span class="code-string">'telephone'</span> are bad on narrowest displays. In case of <span class="code-string">'gender'</span>,
+    two previous controls would have as much space as possible. We can make radio choices on two lines, as this is still
+    suitable for input group with floating labels standard width:
+</p>
+<pre>
+<code class="language-php">
+$form['gender']->setOption("element",
+    'div class="flex-column flex-sm-row align-items-start align-items-sm-center gap-0 gap-sm-2
+    input-group-text list-element rounded-0 rounded-end"
+    style="height: calc(3.5rem + 2px);"'
+    );
+</code>
+</pre>
+<p>
+    Quite a lot of classes :D. On narrowest displays, it is <span class="code-string">flex-column</span>, so its column
+    oriented flex container. Items are how wee need. In this case, we need <span class="code-string">align-items-start gap-0</span>,
+    to be properly placed. On sm- and wider screens we would have them in-row, so we change behaviour with
+    <span class="code-string">flex-sm-row align-items-sm-center gap-sm-2</span>. Maybe you wonder about
+    <span class="code-string">rounded-0 rounded-end</span> and height style. Well, we need to add them ourselves. Because renderer
+    can not know what exactly you would like to achieve by your own wrapper.
+</p>
+<div class="alert alert-info">
+    If you define your own wrapper through some <strong>option</strong>, Bootstrap5FormRenderer <strong>will not</strong>
+    add any classes to it, which would normally be added to the default wrapper (e.g. classes for rounding corners or setup
+    proper height). If you define your own wrapper (again - means through some <strong>option</strong>), you have to add
+    those classes manually. There is only one exception to this rule, and its about validation classes propagation (in next chapters).
+</div>
+<p>
+    Our second problem is <span class="code-string">'telephone'</span>, mainly it's description. On narrowest displays
+    it simply took too much space (more than the input itself). Our solution could be to make it shorter for those displays.
+    So there will be two descriptions, each displayed accordingly to breakpoint. Then we will add both as description:
+</p>
+<pre>
+<code class="language-php">
+    $descLarge = Html::el('div class="input-group-text rounded-end d-none d-sm-flex"')
+        ->addText('only number, or + and number');
+    $descSmall = Html::el('div class="input-group-text rounded-end d-sm-none"')
+        ->addText('(+) and number');
+    $form['phone']->setOption('description', Html::el()->addHtml($descLarge)->addHtml($descSmall));
+</code>
+</pre>
+<p>Let's talk about translations:</p>
+<div class="alert alert-info">
+    Bootstrap5FormRenderer works similarly like DefaultFormRenderer - <strong>caption</strong> of control's
+    label is translated automatically by <span class="code-name">BaseControl</span> itself. <span class="code-name">ControlGroup</span>'s
+    <strong>label</strong>, all <strong>descriptions</strong> and <strong>errors</strong> are translated by renderers. But translation is (in both renderers) possible only
+    if given item is a text. If you use your own Html, then it can not be translated, so you then have to care about it yourself.
+</div>
+<p>
+    Our previous code is exactly that - we inserted our own Html instead of text like ordinary. If we use translator in
+    our form, that description <strong>would not be translated</strong>. We must do this by ourselves:
+</p>
+<pre>
+<code class="language-php">
+    $translator = $form->getTranslator();
+    $descLarge = Html::el('div class="input-group-text rounded-end d-none d-sm-flex"')
+        ->addText($translator->translate('only number, or + and number'));
+    $descSmall = Html::el('div class="input-group-text rounded-end d-sm-none"')
+        ->addText('(+) ' . $translator->translate('and number'));
+</code>
+</pre>
+<div class="alert alert-success">
+    There is language button in top right corner of this website. You should try it. The website itself remains in English,
+    but forms would be translated through translator for demonstrating purposes. The second language is Czech.
+</div>
+<p>Last small problem is with <span class="code-string">'agree'</span> checkbox, I think there is too much space between
+    it and textarea, so we remove margin (automatically added by <span class="code-string">gap-x</span> on parent row),
+    by adding <span class="code-string">mt-0</span> into its groupCol, and we are done:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

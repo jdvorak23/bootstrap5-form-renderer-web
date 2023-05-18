@@ -1,0 +1,36 @@
+{block content}
+<p>
+    That was a lot of work to set own caption and description to have responsive content, and the result is really
+    nothing astonishing. When caption / description is quite long, and we use both, this concept isn't the best.
+    In second ControlGroup, floating labels are very good solution. For the first ControlGroup, where are textual
+    descriptions, it is not the best.
+</p>
+<p>
+    In this case, it would be better to have label on "standard" place, and maybe even description handle somehow else.
+    In next chapters, we will show conceptual solution of this (redefining layout). Here I'll show setup, which
+    works for this case, but wouldn't for some other cases. It is little "hack", but there is very often some similar -
+    to quickly have what is needed.
+</p>
+<p>
+    The problem is, that a label is always rendered to the parent element as the first element (control is the second, if label defined).
+    Standard parent wrapper (when floating labels are off) is <br><code class="language-php">$wrappers['inputGroup']['container']['standard'] = 'div class="input-group flex-nowrap"';</code><br>
+    We can remove <span class="code-string">flex-nowrap</span>, remove auto-height utility (for text inputs it is not needed) -
+    if we don't, label would be to distant from control, and define one more css class:
+</p>
+<pre>
+<code class="language-css">
+.rounded-start-next + *{
+    border-bottom-left-radius: 4px!important;
+    border-top-left-radius: 4px!important;
+}
+</code>
+</pre>
+<p>
+    Now we are prepared to <em>achieve</em> our goal (in this case the word <em>simulate</em> would be better :D):
+</p>
+{control codeLines $form}
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

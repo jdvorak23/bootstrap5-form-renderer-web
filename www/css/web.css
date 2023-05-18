@@ -1,3 +1,6 @@
+html{
+    scroll-padding-top: 56px;
+}
 .code-string{
     color: #690;
 }
@@ -6,4 +9,16 @@
 }
 .code-value{
     color: #905;
+/**/
+}
+.code-variable{
+    color: #DD4A68;
+}
+
+.sb-topnav-hide{
+    transform: translateY(-56px)!important;
+    transition: transform 0.5s;
+}
+.sb-topnav{
+    transition: transform 0.5s;
 }

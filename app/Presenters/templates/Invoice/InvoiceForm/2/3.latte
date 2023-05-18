@@ -1,0 +1,21 @@
+{block content}
+<p>
+    Just small note - if we want to use this setup only in some <span class="code-name">ControlGroup</span>, and in other
+    <span class="code-name">ControlGroup</span> we want to use standard in-input group labels, this could be a problem:
+</p>
+<pre>
+<code class="language-php">
+$renderer->wrappers['label']['.inputGroup'] = 'form-label';
+</code>
+</pre>
+<p>
+    For our renderer, we should use own <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a> to carry
+    our different <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a>. We can append it as usually,
+    through option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#htmlfactory" target="_blank">htmlFactory</a>, but we can also insert it straight into our renderer
+    as an optional parameter of the constructor:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

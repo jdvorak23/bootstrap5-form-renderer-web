@@ -1,0 +1,93 @@
+[group]
+[old]
+embedNext
+visual
+container
+description null|bool|HtmlStringable|string - zatim neni builder, 
+label - zatim neni builder, 
+[new]
+floatingLabels bool
+inputGroupSingleMode bool
+row null|bool|Html|string
+col null|bool|Html|string
+
+.row
+.col
+
+htmlFactory TODO Html...
+
+.container
+
+labelContainer - newly ommited container if own
+.label
+
+descriptionContainer //ommited if own
+.description
+
+pseudoBefore
+pseudoAfter
+
+[control]
+
+
+floatingLabel bool
+renderer TODO BaseControl
+htmlFactory TODO Html...
+clientValidation bool
+
+pseudoBefore
+pseudoAfter
+
+
+inputGroup null|bool|Html|string
+buttonGroup
+
+.inputGroup
+.buttonGroup
+
+groupCol null|bool|Html|string
+defaultCol
+row null|bool|Html|string
+col null|bool|Html|string
+
+.defaultCol
+.row
+.groupCol
+.col
+
+wrapper
+parent
+element
+item
+
+label HtmlStringable ONLY
+
+
+// borders a height na container, pokud existuje, jinak na item
+description null|bool|HtmlStringable|string
+descriptionItem //ommited if own
+descriptionContainer //ommited if own
+
+error
+errorContainer
+feedback null|bool|string TEXT
+validContainer
+valid
+
+.wrapper
+.parent
+.element
+.item
+.control SPECIFIC
+.label //ommited if own
+.itemLabel
+.descriptionItem //ommited if own
+.descriptionContainer //ommited if own
+.error
+.errorContainer
+.validContainer
+.valid
+
+
+firstInInputGroup @internal
+lastInInputGroup @internal

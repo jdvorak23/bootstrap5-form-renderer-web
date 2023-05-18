@@ -1,0 +1,46 @@
+{block content}
+<p>
+    Translations are easy, and are done by the same way like <a href="https://doc.nette.org/en/forms/rendering#toc-renderer" target="_blank">DefaultFormRenderer</a> does.
+    It is described in <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Translations" target="_blank">wiki</a>.
+</p>
+<p>
+    This simple example is based on <a href="https://github.com/nette/forms/blob/master/examples/localization.php" target="_blank">Nette's form translation example</a>.
+    We need translator:
+</p>
+<pre>
+<code class="language-php">
+namespace App\Model;
+
+use Nette\Localization\Translator;
+
+class MyTranslator implements Translator
+{
+    const file = __DIR__ . '/../localization.ini';
+    private array $table = [];
+    public function __construct()
+    {
+        $this->table = parse_ini_file(self::file, false, INI_SCANNER_RAW);
+    }
+    public function translate($message, ...$parameters): string
+    {
+        return $this->table[$message] ?? $message;
+    }
+}
+</code>
+</pre>
+
+<p>
+    In code above is used <a href="https://github.com/jdvorak23/bootstrap5-form-renderer-web/blob/main/app/localization.ini" target="_blank"> this localization file</a>.
+    It is translation to the Czech language.
+</p>
+<p>
+    We use form <a n:href="Person:form, id => 'floating-labels'">from chapter 3</a>. All we need is just to add a translator to the form:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<p>
+    Everything is translated, even all validation messages:
+</p>

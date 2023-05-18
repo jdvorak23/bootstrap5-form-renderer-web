@@ -1,14 +1,54 @@
 {block content}
-<p>We can  adjust some of our specific controls, set their max-width where is not needed more:</p>
+<p>
+    Some fields should be shorter, as they don't need to be so wide. For example <span class="code-string">'street_number'</span>
+    and <span class="code-string">'house_number'</span>.
+</p>
+<p>
+    You have maybe noticed, that there are two three-dimensional parts in <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">$wrappers</a> array. The most
+    important is <code class="language-php text-nowrap">$wrappers['inputGroup']['wrapper']</code>. This is top wrapper for
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#control-part" target="_blank">elements in input group</a>.
+    There are two default wrappers, <span class="code-string">'shrink'</span> and <span class="code-string">'grow'</span>.
+    <span class="code-string">'grow'</span> is used for elements, which should grow and fill space. It is <span class="code-name">SelectBox</span>
+    <span class="code-name">TextInput</span> and <span class="code-name">TextArea</span>. All others shouldn't, <span class="code-string">'shrink'</span>
+    wrapper is default for them.
+</p>
+<p>
+    But this is not enough, and we have problem with some controls, which shouldn't grow evenly, like mentioned <span class="code-string">'street_number'</span>
+    and <span class="code-string">'house_number'</span>. It's why you can see also section commented <em>Own specific wrappers</em>.
+    You can add your own wrappers to it, there are a few I have already made. They can be used to adjust our specific needs for some controls.
+</p>
+<p>
+    You use them through <strong>option</strong> <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#wrapper" target="_blank">wrapper</a> or builder's <span class="code-name">setInputGroupWrapper()</span> method.
+    This <strong>specific</strong> option can have these values:
+</p>
+<table class="table">
+    <tbody>
+    <tr>
+        <td><em>null</em></td><td>Is default. <span class="code-string">'shrink'</span> or <span class="code-string">'grow'</span> will be used.</td>
+    </tr><tr>
+        <td><em>false</em></td><td>This wrapper won't be generated</td>
+    </tr><tr>
+        <td><em>true</em> </td><td>This wrapper will be generated, with default. Same as <span class="code-value">null</span> in this case</td>
+    </tr><tr>
+        <td><em>Html</em></td><td>Use your own <a href="https://doc.nette.org/en/utils/html-elements" target="_blank">Nette\Utils\Html</a> as a wrapper</td>
+    </tr>
+    <tr>
+        <td>
+            <em>string</em></td><td>If it is a string, renderer first tries to find own wrapper defined in <code class="language-php text-nowrap">$wrappers['inputGroup']['wrapper'][$value]</code>.
+            If is set, it'll be used, if not:
+        </td>
+    </tr>
+    <tr>
+        <td><em>string</em></td><td><a href="https://doc.nette.org/en/utils/html-elements#toc-creating-an-html-element" target="_blank">Html::el($value)</a> used as  wrapper</td>
+    </tr>
+    </tbody>
+</table>
+<p>
+    Let's try on our form. <span class="code-string">'street_number'</span>, <span class="code-string">'house_number'</span>
+    <span class="code-string">'zip'</span> and <span class="code-string">'bank'</span> should be shorter:
+</p>
 <pre>
 <code class="language-php">
 {$form->getFactoryMethod()}
-</code>
-</pre>
-<p>Better way is to define own <strong>style classes</strong> in this case, and then add them through option
-    <span class="code-string">'.control'</span>:</p>
-<pre>
-<code class="language-php">
-    $control->setOption('.control', 'my-width-class');
 </code>
 </pre>

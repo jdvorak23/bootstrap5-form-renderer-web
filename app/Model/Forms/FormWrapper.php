@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\Forms;
 
-use Nette\Application\UI\Presenter;
+use Nette\SmartObject;
 
 class FormWrapper
 {
+    use SmartObject;
     const bodyStart = '//------Renderer Setup';
     const bodyEnd = '//------';
     const headerEnd = '//------//------';
@@ -58,7 +59,7 @@ class FormWrapper
 
     public function getCaption(): string
     {
-        return $this->caption ?? $this->name;
+        return $this->caption ?? ucfirst($this->name);
     }
 
     public function setCaption(string $caption): void
@@ -77,6 +78,13 @@ class FormWrapper
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getUrl(): string
+    {
+        $caption = strtolower(trim($this->getCaption()));
+        $caption = str_replace(',', '', $caption);
+        return str_replace(' ','-', $caption);
     }
 
     public function setLines() : void

@@ -1,21 +1,20 @@
 {block content}
-<p>If you have at least md- screen, you can see grid :D</p>
-<p>By setting <strong>$rows = true</strong> in constructor, we set Group-level grid on every group by default.
-Group is defined in <strong class="text-nowrap">$wrappers['group']</strong> section like in DefaultFormRenderer,
+<p>If you have at least md- screen, you can see grid :D. It should be improved.</p>
+<p>By setting <strong>$rows</strong> = <span class="code-value">true</span> in constructor, we set Group-level grid on every ControlGroup by default.
+Group is defined in <code class="language-php text-nowrap">$wrappers['group']</code> section like in DefaultFormRenderer,
     with same wrappers named <span class="code-string">'container'</span>, <span class="code-string">'label'</span>,
     <span class="code-string">'description'</span>. They work in same way. There are also two important new ones,
     <span class="code-string fw-bold">'row'</span> and <span class="code-string fw-bold">'col'</span>.
 </p>
 
 <div class="alert alert-info">
-    <strong class="text-nowrap">$wrappers['group']['row'] </strong> is default wrapper for Group-level grid.<br>
-    <strong class="text-nowrap">$wrappers['group']['col'] </strong> is default wrapper for Group-level column.
+    <code class="language-php text-nowrap">$wrappers['group']['row']</code> is default wrapper for Group-level grid.<br>
+        <code class="language-php text-nowrap">$wrappers['group']['col']</code> is default wrapper for Group-level column.
 </div>
-<p><strong class="text-nowrap">$wrappers['group']['row']</strong> then will be child of
-    <strong class="text-nowrap">$wrappers['group']['container']</strong> wrapper (ordinary fieldset).
-    For every item in this <span class="code-string">'group row'</span>,
-    column wrapper <strong class="text-nowrap">$wrappers['group']['col']</strong> will be generated.</p>
-<p>This can be overwritten on every group, by setting:
+<p>You can read more about <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#top-part" target="_blank">wrappers and layout</a> in reference. </p>
+
+
+<p>This <strong>Group-level grid</strong> can be overwritten on every group, by <strong>options</strong>:
 </p>
 <pre>
 <code class="language-php">
@@ -23,7 +22,7 @@ Group is defined in <strong class="text-nowrap">$wrappers['group']</strong> sect
     $group->setOption('col', $value)
 </code>
 </pre>
-<p>When You set your own wrappers, like in this case - <strong>$value</strong> - it can ordinarily have these values:</p>
+<p>When You set your own wrappers by some option, like in this case - <strong>$value</strong> - it can ordinarily have these types:</p>
 <table class="table">
     <tbody>
     <tr>
@@ -33,13 +32,13 @@ Group is defined in <strong class="text-nowrap">$wrappers['group']</strong> sect
         <td><em>false</em></td><td>this wrapper won't be generated</td>
     </tr>
     <tr>
-        <td><em>true</em> </td><td>this wrapper will be generated (default value from <strong>$wrappers</strong> array)</td>
+        <td><em>true</em> </td><td>this wrapper will be generated (default value from <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a>)</td>
     </tr>
     <tr>
-        <td><em>Html</em></td><td>Nette's <strong>Nette\Utils\Html</strong></td>
+        <td><em>Html</em></td><td>Nette's <a href="https://doc.nette.org/en/utils/html-elements" target="_blank">Nette\Utils\Html</a></td>
     </tr>
     <tr>
-        <td><em>string</em></td><td>which will be used as shorthand <strong>Html::el($value)</strong></td>
+        <td><em>string</em></td><td>which will be used for <a href="https://doc.nette.org/en/utils/html-elements#toc-creating-an-html-element" target="_blank">Html::el($value)</a></td>
     </tr>
     </tbody>
 </table>
@@ -63,6 +62,6 @@ Group is defined in <strong class="text-nowrap">$wrappers['group']</strong> sect
     }
 </code>
 </pre>
-<p>Group <span class="code-name">Person</span> won't have grid, <span class="code-name">Address</span>
-    have other default <span class="code-string">'group col'</span>, set manually to
+<p>ControlGroup <span class="code-name">Person</span> won't have grid, <span class="code-name">Address</span>
+    have other default <span class="code-string">'group col'</span> column, set manually to
     <span class="code-string">'div class="col-md-4"'</span>:</p>

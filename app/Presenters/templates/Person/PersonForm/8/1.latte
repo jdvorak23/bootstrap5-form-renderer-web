@@ -1,0 +1,76 @@
+{block content}
+<p>
+    If you have many forms, there would be some repeatable set-ups. If we look on form in <a n:href="Person:form#floating-labels-and-height, 'id' => 'floating-labels'" target="_blank">chapter 3</a>,
+    there is <span class="code-string">'note'</span> textarea with three options:
+</p>
+<pre>
+<code class="language-php">
+$design('note')->setGrid(false)
+    ->setParentClasses('d-flex flex-column h-100')
+    ->setControlClasses('flex-grow-1 textarea-default-height');
+</code>
+</pre>
+<p>
+    We can save our complex Options, and then append it in one line.
+</p>
+<div class="alert alert-info">
+    There is a class <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a>. It can be used to
+    hold options saved to <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Options#class-options" target="_blank">Options</a>. It also could be
+    used to hold different <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a>.
+    HtmlFactory can be appended to any control. Then, saved options are used (unless they are re-specified on control), and,
+    if different Wrappers are provided, they are used instead of renderer's default wrappers.
+</div>
+<p>
+    It can be confusing, let's do an example. We will use builder, but, for demonstration, the slowest way:
+</p>
+<pre>
+<code class="language-php">
+$myTextareaDesigner = new ControlDesigner();
+$myTextareaDesigner->setGrid(false)
+    ->setParentClasses('d-flex flex-column h-100')
+    ->setControlClasses('flex-grow-1 textarea-default-height');
+$myTextareaOptions = $myTextareaDesigner->options;
+$myTextareaSetup = new HtmlFactory($myTextareaOptions);
+$design('note')->setHtmlFactory($myTextareaSetup);
+</code>
+</pre>
+
+<div class="alert alert-info">
+    There is <strong>option</strong> <span class="code-string">htmlFactory</span> on <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/ControlGroup%20Options#htmlfactory" target="_blank">ControlGroup</a>
+    and <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#htmlfactory" target="_blank">Control</a>.
+    You can provide instance of your own <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a>. <strong>Options</strong> and <strong>Wrappers</strong> from
+    this provided factory will be then used instead of <strong>default</strong> ones.
+</div>
+<p>
+    It's not need to do it so complicated. First constructor parameter of <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a> could be not only <span class="code-name">Options</span>, but also
+    <span class="code-name">ControlDesigner</span> itself. Also, you can use known <span class="code-name">Designer</span> methods with
+    <span class="code-value">null</span> as a parameter to build Options. It could be shorten:
+</p>
+
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<p>
+    If we do not have instance of Designer, we can use static method:
+</p>
+<pre>
+<code class="language-php">
+protected function getTextAreaFactory(): HtmlFactory
+{
+    return new HtmlFactory(
+        Designer::control()->setGrid(false)
+            ->setParentClasses('d-flex flex-column h-100')
+            ->setControlClasses('flex-grow-1 textarea-default-height')
+            ->setInputGroup(false)
+    );
+}
+</code>
+</pre>
+<p>And then:</p>
+<pre>
+<code class="language-php">
+$design('note')->setHtmlFactory($this->getTextAreaFactory());
+</code>
+</pre>

@@ -1,17 +1,17 @@
-Base Control:
---Button
-----SubmitButton
--------ImageButton
---Checkbox
+Base Control -> option 'type'
+--Button -> 'button'
+----SubmitButton -> 'button'
+-------ImageButton -> 'button'
+--Checkbox -> 'checkbox'
 --(abstract)ChoiceControl
-----SelectBox
-----RadioList
+----SelectBox -> 'select'
+----RadioList -> 'radio'
 --(abstract)MultiChoiceControl
-----CheckboxList
-----MultiSelectBox
+----CheckboxList -> 'checkbox'
+----MultiSelectBox -> 'select'
 --(abstract)TextBase
-----TextInput
-----TextArea
---UploadControl
---HiddenField
----CsrfProtection
+----TextInput -> 'text'
+----TextArea -> 'textarea'
+--UploadControl -> 'file'
+--HiddenField -> 'hidden'
+---CsrfProtection -> 'hidden'

@@ -1,26 +1,77 @@
 {block content}
+<p>
+    This form is an example of setting invoice defaults for some service. These defaults are then used for automatic
+    invoice and its items generation. It's ideal for introduce <strong>input group single mode</strong>:
+</p>
+<div class="alert alert-info">
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Constructor" target="_blank">Constructor parameter $inputGroupSingleMode</a>
+    is <span class="code-value">false</span> by default. Then everything works "normally" - you must start and end input group
+    manually. If this parameter is set to <span class="code-value">true</span>, <strong>new</strong> input group starts
+    automatically on every control. This can be set / reset differently
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/ControlGroup%20Options#inputgroupsinglemode" target="_blank">on every ControlGroup</a>.
+    It means, when option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#inputgroup" target="_blank">inputGroup</a>
+    on control is <span class="code-value">null</span>(is not set at all), new input group starts on this control. If
+    you need add the control to the previous input group, then you set option to <span class="code-value">true</span>.
+    If you won't that control in input group, you set it (as usually) to <span class="code-value">false</span>.
+</div>
+<p>
+    We have possibly quite long messages in inputs, so we let one per line even on larger screens. We also "need"
+    add some <a href="https://getbootstrap.com/docs/5.2/components/dropdowns/#single-button" target="_blank"> action button</a> for something, so input group is ideal.
+</p>
+<p>
+    We also would add some hand-driven responsibility to the form. Try what happens on smallest screens. Text
+    of label and description of controls in first ControlGroup are responsive, also action button is just an arrow.
+</p>
+<p>
+    We can use some methods for "responsive" text:
+</p>
+<pre>
+<code class="language-php">
+protected function getResponsiveChunk(string $text, string $classes): Html
+{
+    return Html::el('div')
+        ->class($classes)
+        ->setText($text);
+}
+
+protected function getResponsiveText(string $text, string $smText, ?string $classes = null): Html
+{
+    return Html::el()
+        ->addHtml($this->getResponsiveChunk($text, 'd-sm-none ' . $classes))
+        ->addHtml($this->getResponsiveChunk($smText, 'd-none d-sm-flex col-sm-4 col-md-3 ' . $classes));
+}
+</code>
+</pre>
+<p>
+    And action button:
+</p>
+<pre>
+<code class="language-php">
+protected function getActionButton(?string $classes = null) : Html
+{
+    return Html::el()-&gt;addHtml(&#039;
+              &lt;button class=&quot;btn btn-outline-secondary dropdown-toggle &#039; . $classes . &#039;&quot; type=&quot;button&quot; data-bs-toggle=&quot;dropdown&quot; aria-expanded=&quot;false&quot;&gt;
+                &lt;span class=&quot;d-none d-sm-inline&quot;&gt;Action&lt;/span&gt;
+              &lt;/button&gt;
+              &lt;ul class=&quot;dropdown-menu&quot;&gt;
+                &lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href=&quot;#&quot;&gt;Action&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href=&quot;#&quot;&gt;Another action&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href=&quot;#&quot;&gt;Something else here&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;hr class=&quot;dropdown-divider&quot;&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href=&quot;#&quot;&gt;Separated link&lt;/a&gt;&lt;/li&gt;
+              &lt;/ul&gt;
+    &#039;);
+}
+</code>
+</pre>
+<p>
+    There is factory method for the form. We set <span class="code-variable">$inputGroupSingleMode</span> to <span class="code-value">true</span>.
+    We set own <strong>caption</strong> on elements in first ControlGroup, and also we reset <strong>description</strong>
+    to the responsive one. Button we won't in input group, and for ControlGroup <span class="code-name">Invoice items</span> we
+    set floating labels on:
+</p>
 <pre>
 <code class="language-php">
 {$form->getFactoryMethod()}
-</code>
-</pre>
-
-<pre>
-<code class="language-php">
-    protected function getActionButton() : Html
-    {
-        return Html::el()->addHtml('
-                  &#60button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"&#62
-                    &#60span class="d-none d-sm-inline"&#62Action&#60/span&#62
-                  &#60/button&#62
-                  &#60ul class="dropdown-menu"&#62
-                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Action&#60/a&#62&#60/li&#62
-                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Another action&#60/a&#62&#60/li&#62
-                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Something else here&#60/a&#62&#60/li&#62
-                    &#60li&#62&#60hr class="dropdown-divider"&#62&#60/li&#62
-                    &#60li&#62&#60a class="dropdown-item" href="#"&#62Separated link&#60/a&#62&#60/li&#62
-                  &#60/ul&#62
-        ');
-    }
 </code>
 </pre>

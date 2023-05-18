@@ -10,44 +10,28 @@
     Bootstrap5FormRenderer automatically adds it, with control's <strong>$caption</strong> value, to every control where
     <span class="code-string">placeholder</span> is <strong>not</strong> set.
 </div>
-<p>Setting <span class="code-string">'floatingLabel'</span> on control could be useful even if it is set on control,
+<p>Setting <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#floatinglabel" target="_blank">floatingLabel</a> on control could be useful even if it is set on control,
     which doesn't supports floating labels - to set proper height in input group - we will talk about in next chapters.
 </p>
 <p>
     Back to our form, <span class="code-string">'gender'</span> now have bad design for us. We should adjust it.
     In our case, it is quite pretty if we make it looks like other controls around. We added <strong>$caption</strong>
     for previous form, but it is not needed at all, choices are self-explaining. We remove it. We let
-    <span class="code-string">'parent'</span> element set to <span class="code-value">false</span>, and make our
-    specific needs in <span class="code-string">'element'</span>. We make it <strong>flex</strong> by
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#parent" target="_blank">parent</a>
+    element set to <span class="code-value">false</span>, and make our
+    specific needs in <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#element" target="_blank">element</a>.
+    We make it <strong>flex</strong> by
     <span class="code-string">d-flex</span>, center it both axis by
     <span class="code-string">align-items-center justify-content-center</span> classes, and we would add class
     <span class="code-string">form-control</span>, which is perfectly suitable for us - it does borders we need for us,
     and also works for validation - red borders and exclamation mark if there is error on this control. We also need
     to add style for proper height. Bootstrap5, very unfortunately, have no native class for it - even this value is
     default for many controls (with floating label). It's definition in Bootstrap5 css is
-    <span class="code-value">calc(3.5rem + 2px)</span>, so we should use the same, add it to style attribute. The result:
+    <span class="code-value">calc(3.5rem + 2px)</span>, so we should use the same, add it to style attribute, or better
+    solution <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/css" target="_blank">create your own css for it</a>. The result:
 </p>
 <pre>
 <code class="language-php">
-    protected function createComponentPersonForm() : Form
-    {
-        $form = $this->personFormFactory->create();
-        //------Renderer Setup
-        $renderer = new Renderer(true, true, novalidate: true);
-        $form->setRenderer($renderer);
-        $form['save']->setOption('groupCol', 'div class="col-12"');
-        $form['account']->setOption('row', true);
-        $form['note']->setOption('row', false)
-            ->setOption('.parent', 'd-flex flex-column h-100')
-            ->setOption('.control', 'flex-grow-1');
-        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['gender']->setOption("parent", false)
-            ->setOption('element', 'div class="d-flex gap-2 align-items-center justify-content-center form-control list-element" style="height: calc(3.5rem + 2px);"');
-        //------
-        return $form;
-    }
+{$form->getFactoryMethod()}
 </code>
 </pre>

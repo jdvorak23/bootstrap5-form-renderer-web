@@ -1,132 +1,56 @@
 {block content}
-<p>In 'Address' Group, there are two inputs 'street_number' and 'house_number'. They can be quite short,
-    and even on smaller devices they can be next to each other. Simplest setup for us:
-</p>
+<p>On md-+ screens, we have now better layout at the bottom of the PersonForm, but our <span class="code-string">'note'</span> textarea should
+    fill all empty space. Let's introduce some more options. You can always change control's element <strong>outside</strong> renderer, like:</p>
 <pre>
 <code class="language-php">
-    $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-    $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
+$control->getControlPrototype()->...
 </code>
 </pre>
-<p>It's just recapitulating of <em>'groupCol'</em> option.</p>
-<p>Our 'state' control is now alone, we can play with it. This and 'zip' are also not so long, but not as short
-as 'street_number' and 'house_number'. We can do something like this:</p>
-<pre>
-<code class="language-php">
-    $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-    $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-</code>
-</pre>
-<p>Last control to play with is 'gender'. At first, for our layout type, it would be maybe better use <em>label</em>.
-    In PersonFormFactory this control is defined as:</p>
-<pre>
-<code class="language-php">
-    $form->addRadioList("gender", null, [
-        'male' => 'Muž',
-        'female' => 'Žena',
-    ])->setRequired("Musíte mít pohlaví.");
-</code>
-</pre>
-<p>As you can see, we set parameter <strong>$label</strong> to <em>null</em>. Here is something very important about
-    Nette's behaviour around label and DefaultFormRenderer. First, look what is happening when you call
-    Form::addRadioList(...) builder method. It creates new instance of class RadioList, with <strong>$label</strong> as constructor parameter.
-    It passes on this <strong>$label</strong> parameter to ancestor class(ChoiceControl) constructor, and it passes it again
-    to the abstract ancestor of all Nette's controls <strong>BaseControl</strong>. But look carefully on constructor
-    of this class:
-</p>
-<pre>
-<code class="language-php">
-    // Constructor of Nette's Nette\Forms\Controls\BaseControl class
-	public function __construct($caption = null)
-	{
-		$this->control = Html::el('input', ['type' => null, 'name' => null]);
-		$this->label = Html::el('label');
-		$this->caption = $caption;
-		$this->rules = new Rules($this);
-		$this->setValue(null);
-		$this->monitor(Form::class, function (Form $form): void {
-			if (!$this->isDisabled() && $form->isAnchored() && $form->isSubmitted()) {
-				$this->loadHttpData();
-			}
-		});
-	}
-</code>
-</pre>
-<p>This parameter walk through inheritance hiearchy as <strong>$label</strong>, but when it reaches
-    <strong>BaseControl</strong> constructor, it is accepted as parameter named <strong>$caption</strong>.
-    Two lines from constructor:
-</p>
-<pre>
-<code class="language-php">
-    $this->label = Html::el('label');
-    $this->caption = $caption;
-</code>
-</pre>
-<div class="alert alert-warning">
-    I maybe miss something, but it seems like a little naming mismatch. It is very important to know, that
-    <strong>$label</strong> parameter in any form builder method (addText(), addRadioList(), ...) is a confusing
-    thing, and it is not really a label (representing label tag), but a <strong>$caption</strong>, which
-    is content (innerHtml, in other words) of label.
-</div>
-<p>It implies one kind of behaviour - if you set <strong>$label</strong> parameter in builder method as <em>null</em>
-    or <em>false</em>, DefaultFormRenderer (and many others I suppose...) will still generate label tag, which will be
-    empty, because by this parameter you set <strong>$caption</strong> rather than <strong>$label</strong>. But this is
-    not intended behaviour, sometime there is need to omit whole label, especially for RadioLists and CheckboxLists
-    in input group.
-</p>
-<div class="alert alert-success">
-    Bootstrap5FormRenderer brings change to process <strong>$label</strong> parameter of form builder methods.
-    When you set it to <em>null</em> or <em>false</em>, the label itself won't be generated. This can be overwritten
-    by setting up option 'label' on control, read on.
-</div>
-<p>Yep, there is another option you can use (on control level) <strong>'label'</strong>. By setting this option,
-    you can create completely your own label. This makes perfect sense when rendering RadioLists and CheckboxLists.
-    Label in this case means something describing whole control <em>structure</em>, which contains items (single
-    radios or checkboxes). These items have their own labels which have <em>for</em> attribute, but overall label doesn't.
-    You can use it for different purposes.
-</p>
+<p>If you want this, you will, in most cases, want to add or change some attribute. If you want to add or subtract a css class:</p>
 <div class="alert alert-info">
-    If you set option <strong>'label'</strong> on control, <strong>$label</strong> parameter of builder method
-    will be omitted. You must set everything by yourself, all attributes and innerHtml.
+    On <strong>control</strong> there is option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#control" target="_blank">.control</a>, with which you can change classes of
+    <strong>control element itself</strong>. If a control have more elements (e.g. RadioList), this class(es) will be added to all of them.
+    In other words, everywhere is control's (or control's items) <strong>name</strong> attribute, there these class(es) will be added / subtracted. You can <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers#meanings-and-types-of-values" target="_blank">read more about classes in reference</a>.
 </div>
-<p>We can demonstrate on our 'gender' RadioList. We can try rewrite our 'gender' definition in factory:</p>
+<a href="" target="_blank"></a>
+<p>This way we add <span class="code-string">'flex-grow-1'</span> class to our textarea:</p>
 <pre>
 <code class="language-php">
-    $form->addRadioList("gender", 'Gender', [
-        'male' => 'Muž',
-        'female' => 'Žena',
-    ])->setRequired("Musíte mít pohlaví.");
+$design('note')->setGrid(false)
+    ->setControlClasses('flex-grow-1');
 </code>
 </pre>
-<p>You can see that now we have label with content of string 'Gender'.</p>
-<p>Set <strong>$label</strong> back to <em>null</em>. We could achieve exactly same result by setting parameter
-<strong>caption</strong> of our control 'gender':</p>
+<p>It is not easy implement all Bootstrap 5 form features - you need different <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout" target="_blank">layout</a> for different scenarios.
+    Main differences are when you want use <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Input%20group" target="_blank">input groups</a>
+    and also <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Floating%20Labels" target="_blank">floating labels</a> (we'll talk about in next chapters).
+    If we don't yet, <code class="language-php text-nowrap">$wrappers['container']['default']</code> is our default
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#control-part" target="_blank">parent</a> wrapper for most controls.
+    It's simple <span class="code-string">div</span> by default.
+</p>
+<p>Let's show how we can use it and some basics around. Now we want just add some classes:</p>
 <pre>
 <code class="language-php">
-    protected function createComponentPersonForm() : Form
-    {
-        $form = $this->personFormFactory->create();
-        //------Renderer Setup
-        $renderer = new Renderer(true);
-        $form->setRenderer($renderer);
-        $form['save']->setOption('groupCol', 'div class="col-12"');
-        $form['account']->setOption('row', true);
-        $form['note']->setOption('row', false)
-            ->setOption('.parent', 'd-flex flex-column h-100')
-            ->setOption('.control', 'flex-grow-1');
-        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['gender']->setCaption('Gender');
-        //------
-        return $form;
-    }
+$design('note')->setGrid(false)
+    ->setControlClasses('flex-grow-1')
+    ->setParentClasses('d-flex flex-column h-100');
 </code>
 </pre>
-<p>And for demonstrating own label you can try:</p>
+<div class="alert alert-info">
+    There are two new options on <strong>controls</strong> - <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#parent" target="_blank">parent</a>
+    and <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#parent-1" target="_blank">.parent</a>.
+    You can change control's parent element by them - set different one, or <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers#meanings-and-types-of-values" target="_blank">add or subtract classes</a> only.
+</div>
+<p>Maybe, in some other scenarios, we could want change whole wrapper, so we can do too (with same result):</p>
 <pre>
 <code class="language-php">
-        $form['gender']->setOption('label', Html::el('div class="text-primary"')->setText('Gender'));
+$design('note')->setGrid(false)
+    ->setControlClasses('flex-grow-1')
+    ->setParent('div class="d-flex flex-column h-100"');
+</code>
+</pre>
+<p>For now, we have this form:</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
 </code>
 </pre>

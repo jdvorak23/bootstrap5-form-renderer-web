@@ -1,114 +1,88 @@
 {block content}
-<p>CheckboxList an RadioList are quite specific controls. They're one control, but have more items. When you have,
-for example, TextInput, element of this TextInput is pretty clear - it's <em>&#60;input type="text" .../&#62;</em> html element,
-    representing control itself. But what is it in the case of CheckboxList or RadioList (and even Checkbox)? The element
-    of these controls is not control element itself, it's just some wrapper (container), which has children of items.
-    Item is single checkbox or radio (probably with label together).</p>
-<p>Nette's DefaultFromRenderer doesn't care about this. When it's about rendering any control, it does:</p>
-<pre>
-<code class="language-php">
-    $el = $control->getControl();
-</code>
-</pre>
-<p>This method <strong>getControl()</strong> is (as expected) overloaded in all classes we are talking about. It's creating Html structure
-    of all items. There is (only these three classes have it) specific property <strong>$container</strong>, which is that
-    wrapper for the whole structure. It's set in constructor as default:
+<p>In <span class="code-string">'Address'</span> ControlGroup, there are two inputs <span class="code-string">'street_number'</span> and <span class="code-string">'house_number'</span>.
+    They can be quite short, and even on smaller devices they can be next to each other. Again, we play with
+    group column, and we can use builder for multiple controls:
 </p>
 <pre>
 <code class="language-php">
-    $this->container = Html::el();
+$design('street_number house_number')->setGroupColumn('div class="col-6 col-md-3"');
 </code>
 </pre>
-<p>This means, by default, there's no element. These classes all define method <strong>getContainerPrototype()</strong> to
-    bring possibility to change this <strong>$container</strong> (wrapper). With DefaultFormRenderer, you have to do something like this,
-    if you want setup this element:
+<p>
+    It's just recapitulating of <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#groupcol" target="_blank">groupCol</a> option.
+</p>
+<p>
+    Our <span class="code-string">'state'</span> control is now alone, we can play with it. This and <span class="code-string">'zip'</span>
+    are also not so long, but not as short as <span class="code-string">'street_number'</span> and
+    <span class="code-string">'house_number'</span>. We can do something like this:
 </p>
 <pre>
 <code class="language-php">
-    $container = $form['gender']->getContainerPrototype();
-    $container->setName('div');
-    $container->class('my-class');
+$design('zip state')->setGroupColumn('div class="col-12 col-md-6 col-lg-3"');
 </code>
 </pre>
-<p>We were already talking about - there are specific Bootstrap 5 features (input groups, floating labels) which need
-    render different layout to work properly. Also, DefaultFormRenderer is almost 20 years old. What was "standard"
-    20 years ago, is deprecated nowadays. It involves how items in these classes are rendered. If you try
-    render this form with DefaultFormRenderer you can see it on our 'gender' RadioList:
-</p>
+<p>Last control to play with is 'gender'. At first, for our layout type, it would be maybe better use <strong>label</strong>.
+    In PersonFormFactory this control is defined as:</p>
 <pre>
-<code class="language-html">
-    &#60;label&#62;
-        &#60;input type="radio" name="gender" required="" data-nette-rules="..." value="male"&#62;Muž
-    &#60;/label&#62;
-    &#60;br&#62;
-    &#60;label&#62;
-        &#60;input type="radio" name="gender" required="" value="female"&#62;Žena
-    &#60;/label&#62;
+<code class="language-php">
+$form->addRadioList("gender", null, [
+    'male' => 'Male',
+    'female' => 'Female',
+])->setRequired("Gender is required.");
 </code>
 </pre>
-<p>I'm not sure if this even fits HTML5 standard. At least this doesn't fit
-    <a href="https://getbootstrap.com/docs/5.2/forms/checks-radios/">Bootstrap 5 checks and radios</a> layout. What
-    is even more important - this is not work of DefaultFormRenderer, this structure is completely created not by
-    renderer, but with <strong>getControl()</strong> method on control as described above.
-</p>
-<p>Nowadays we need render different structure of item's elements and labels. Fortunately, these control classes are
-    pre-prepared for this, having <strong>getControlPart($key)</strong> and <strong>getLabelPart($key)</strong>
-    methods for creating these html elements one-by-one. And it's exactly how Bootstrap5FormRenderer works with
-    this type of controls. It renders them manually, let Nette's classes for controls create only item element and label.
+<p>As you can see, we set parameter <strong>$label</strong> to <span class="code-value">null</span>. Here is something very important about
+    Nette's behaviour around label and DefaultFormRenderer. It's good to know, that with Nette's form builder, the second parameter is
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#control-label-and-caption" target="_blank">
+        sometimes named $label, sometimes $caption
+    </a>
+    . But meaning of it is always the same - <strong>$caption</strong>.
+
+<div class="alert alert-warning">
+    I maybe miss something, but it seems like a little naming mismatch. It is very important to know, that
+    <strong>$label</strong> parameter in any form builder method (addText(), addRadioList(), ...) is a confusing
+    thing, and it is not really a label (representing label tag), but a <strong>$caption</strong>, which
+    is content (innerHtml, in other words) of <strong>label</strong>.
+</div>
+<p>It implies one kind of behaviour - if you set <strong>$label</strong> parameter in builder method as <span class="code-value">null</span>
+    or <span class="code-value">false</span>, DefaultFormRenderer (and many others I suppose...) will still generate label tag, which will be
+    empty, because by this parameter you set <strong>$caption</strong> rather than <strong>$label</strong>. But this is
+    not intended behaviour, sometime there is need to omit whole label, especially for RadioLists and CheckboxLists
+    in input group.
 </p>
 <div class="alert alert-success">
-    Bootstrap5FormRenderer renders <strong>RadioList</strong> and <strong>CheckboxList</strong> manually.
-    The property <strong>$container</strong> of these classes is always <strong>omitted</strong>! Instead of it, there is wrapper in <strong>$wrappers</strong>
-    representing it. It is different for different scenarios. If these controls <strong>are not in input group</strong>,
-    it is <strong class="text-nowrap">$wrappers['control']['list']</strong>. There is also wrapper for every <em>item</em> -
-    <strong class="text-nowrap">$wrappers['control']['listItem']</strong>. And, their <em>parent</em> element is specific, defined in
-    <strong class="text-nowrap">$wrappers['pair']['listContainer']</strong>.<br>
+    Bootstrap5FormRenderer brings change to process <strong>$label</strong> or <strong>$caption</strong> parameter of form builder methods.
+    When you set it to <span class="code-value">null</span> or <span class="code-value">false</span>, the label itself won't be generated.
+    This can be overwritten by setting up option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#label" target="_blank">label</a> on control, read on.
 </div>
+<p>Yep, there is another option you can use (on control level) <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#label" target="_blank">label</a>.
+    By setting this option,
+    you can create completely your own label. This makes perfect sense when rendering RadioLists and CheckboxLists.
+    Label in this case means something describing whole control <em>structure</em>, which contains items (single
+    radios or checkboxes). These items have their own labels which have <span class="code-value">for</span> attribute, but overall label doesn't.
+    You can use it for different purposes.
+</p>
 <div class="alert alert-info">
-    Bootstrap5FormRenderer brings four more options on control. It is <strong>'element'</strong> and <strong>'item'</strong>
-    for setting own wrapper, <strong>'.element'</strong> and <strong>'.item'</strong> to add classes into default 'element' or 'item' wrapper.
-    They have sense and works only on CheckboxList, RadioList and Checkbox, on other controls are omitted.
+    If you set option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#label" target="_blank">label</a> on control,
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#control-label-and-caption" target="_blank">$label or $caption</a>
+    parameter of builder method
+    will be omitted. You must set everything by yourself, all attributes and innerHtml. Provided value must be instance
+    of <a href="https://doc.nette.org/en/utils/html-elements#toc-htmlstringable" target="_blank">HtmlStringable</a>.
 </div>
-<p>I understand it's maybe a lot of theory on first chapter of introducing tutorial. But a lot of from how
-    Bootstrap5FormRenderer works were already explained, next chapters are way shorter, introducing mainly features.
-    If you catch at least that there are many new options on controls and groups, defining own wrapper, or, if starts
-    with '.', adding classes to some default wrapper, you are in. Next chapters you just use this knowledge.
-</p>
-<p>
-    We still haven't finished out form. I think in our case, where only two items are in RadioList, we can use <em>inline</em>
-    radios. Bootstrap 5 have <em>form-check-inline</em> class for it. <strong>$wrappers['pair']['listContainer']</strong>
-    is default parent wrapper for RadioList. It's default value is pre-prepared for lists with more items, and definitely
-    is not suitable for our inline plans. Easiest for us is not use it at all, by setting option
-    <strong>'parent'</strong> to <em>null</em>.
-</p>
-<p>
-    Element is, by default, defined in <strong class="text-nowrap">$wrappers['control']['listItem']</strong> and is
-    <em>null</em>. For our purpose, we define it with Bootstrap's <em>pt-md-2</em> class to make radios properly "inline"
-    with 'email' TextInput. Last thing we need is set class <em>form-check-inline</em> to item wrapper:
-</p>
+<p>We can demonstrate on our 'gender' RadioList. We can try rewrite our <span class="code-string">'gender'</span> definition in factory:</p>
 <pre>
 <code class="language-php">
-    protected function createComponentPersonForm() : Form
-    {
-        $form = $this->personFormFactory->create();
-        //------Renderer Setup
-        $renderer = new Renderer(true);
-        $form->setRenderer($renderer);
-        $form['save']->setOption('groupCol', 'div class="col-12"');
-        $form['account']->setOption('row', true);
-        $form['note']->setOption('row', false)
-            ->setOption('.parent', 'd-flex flex-column h-100')
-            ->setOption('.control', 'flex-grow-1');
-        $form['street_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['house_number']->setOption('groupCol', 'div class="col-6 col-md-3"');
-        $form['zip']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['state']->setOption('groupCol', 'div class="col-12 col-md-6 col-lg-3"');
-        $form['gender']->setCaption('Pohlaví')
-            ->setOption('parent', false)
-            ->setOption('element', 'div class="pt-md-2"')
-            ->setOption('item', 'div class="form-check form-check-inline"');
-        //------
-        return $form;
-    }
+$form->addRadioList("gender", 'Gender', [
+    'male' => 'Male',
+    'female' => 'Female',
+])->setRequired("Gender is required.")
+</code>
+</pre>
+<p>You can see that now we have label with content of string <span class="code-string">'Gender'</span>.</p>
+<p>Set <strong>$label</strong> back to <span class="code-value">null</span>. We could achieve exactly same result by setting parameter
+    <strong>$caption</strong> of our control <span class="code-string">'gender'</span>:</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
 </code>
 </pre>

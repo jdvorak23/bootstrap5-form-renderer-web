@@ -1,60 +1,95 @@
 <!DOCTYPE html>
-<html lang="cs-cz">
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<link rel="stylesheet" type="text/css" href="{$basePath}/fontawesome/css/all.css">
-	<link rel="stylesheet" type="text/css" href="{$basePath}/css/bootstrapv5.2.3.css">
-	<link rel="stylesheet" type="text/css" href="{$basePath}/css/prism.css">
-	<link rel="stylesheet" type="text/css" href="{$basePath}/css/web.css">
-	<link rel="stylesheet" type="text/css" href="{$basePath}/css/renderer.css">
-
-	<title>{ifset title}{include title|stripHtml} | {/ifset}Bootstrap5FormRenderer</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Bootstrap5FormRenderer" />
+    <meta name="author" content="Jan Dvořák" />
+    <title>{ifset title}{include title|stripHtml} | {/ifset}Bootstrap5FormRenderer</title>
+    <link rel="stylesheet" type="text/css" href="{$basePath}/fontawesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/sb-admin.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/prism.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/web.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/renderer.css">
 </head>
-
-<body>
-<nav class="navbar navbar-expand-lg bg-light">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="#">Bootstrap5FormRenderer</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" n:href="Person:form 'id'=>1">PersonForm</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" n:href="Invoice:form 'id'=>1">InvoiceForm</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" n:href="Booking:form 'id'=>1">BookingForm</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3 me-2" style="width: auto" href="https://github.com/jdvorak23/bootstrap5-form-renderer" target="_blank">Bootstrap5FormRenderer</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm ms-auto ms-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 </nav>
-	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
-	<main class="mb-3">
-		{include content}
-	</main>
-
-	<footer>
-		<footer class="py-4 bg-light mt-auto">
-			<div class="container-fluid px-4">
-				<div class="d-flex justify-content-center small text-muted">
-					Jan Dvořák {="now"|date:'Y'}
-				</div>
-			</div>
-		</footer>
-	</footer>
-	{block scripts}
-	{*	<script src="https://nette.github.io/resources/js/3/netteForms.min.js"></script>*}
-		<script type="application/javascript" src="{$basePath}/js/bootstrap.bundle.js"></script>
-		<script type="application/javascript" src="{$basePath}/js/prism.js"></script>
-		<script type="application/javascript" src="{$basePath}/js/netteForms.js"></script>
-		<script type="application/javascript" src="{$basePath}/js/validation.js"></script>
-		<script type="application/javascript" src="{$basePath}/js/renderer.js"></script>
-	{/block}
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Tutorials</div>
+                    {ifset "menu-personForm"}
+                        {include menu-personForm}
+                    {else}
+                        <a class="nav-link" n:href="Person:form">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                            PersonForm
+                        </a>
+                    {/ifset}
+                    {ifset menu-invoiceForm}
+                        {include menu-invoiceForm}
+                    {else}
+                        <a class="nav-link" n:href="Invoice:form">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                            InvoiceForm
+                        </a>
+                    {/ifset}
+                    {ifset menu-bookingForm}
+                        {include menu-bookingForm}
+                    {else}
+                        <a class="nav-link" n:href="Booking:form">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                            BookingForm
+                        </a>
+                    {/ifset}
+                    {ifset menu-loginForm}
+                        {include menu-loginForm}
+                    {else}
+                        <a class="nav-link" n:href="Login:form">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                            LoginForm
+                        </a>
+                    {/ifset}
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Work with examples:</div>
+                <a href="https://github.com/jdvorak23/bootstrap5-form-renderer-web" target="_blank">
+                    Download the whole web!
+                </a>
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main class="mb-3">
+            {include content}
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex justify-content-center small text-muted">
+                    Jan Dvořák {="now"|date:'Y'}
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+{block scripts}
+    {*	<script src="https://nette.github.io/resources/js/3/netteForms.min.js"></script>*}
+    <script type="application/javascript" src="{$basePath}/js/bootstrap.bundle.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/prism.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/netteForms.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/validation.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/renderer.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/sb-admin.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/web.js"></script>
+{/block}
 </body>
 </html>

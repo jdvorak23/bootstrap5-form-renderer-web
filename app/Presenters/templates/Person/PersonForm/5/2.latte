@@ -1,17 +1,47 @@
 {block content}
 <p>
-    We would use form from previous chapter. We set <strong>floating labels</strong> to <span class="code-value">true</span>.
-    We just adjust our max-width to be suitable for floating labels. Again, I remind this is for demonstrating purpopses,
-    instead of setting styles is better to define classes with this max-width and then add them to control
-    (howto in previous chapter).
+    We start with round corners. As mentioned in previous chapter, normally there are classes in <strong>$wrappers</strong>
+    array to manually round corners. It's three classes in <code class="language-php">$wrappers['inputGroup']</code> :
+</p>
+<pre>
+<code class="language-php">
+'.item' => 'rounded-0', // Applied to every item in input group to reset Bootstrap5's pseudo classes
+'.firstItem' => 'rounded-start', // Applied to first item to round left borders
+'.lastItem' => 'rounded-end', // Applied to the last item to round right borders
+</code>
+</pre>
+<p>
+    This is usable only for non-responsive input groups. When we want responsive ones, this can not be used, as
+    columns changes theirs positions based on screen width. I think this can't be managed with css, maybe can, but I
+    haven't found solution. There is <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/blob/master/src/assets/renderer.js" target="_blank">
+        simple javascript provided</a> to manage it.
 </p>
 <p>
-    <strong>$wrappers['form']['container']</strong> is ordinary <span class="code-value">null</span>, but in this case
-    we can use it to add container for form max-width and card-like border around. This is very easy and straightforward,
-    just set properly input groups and if the field shouldn't grow, set max-width:
+    Now is important to us, that corners will be rounded by javascript, we will provide elements <strong>without</strong>
+    any rounded corners and it will do the rest. So we simply unset these two classes:
+</p>
+<pre>
+<code class="language-php">
+$renderer->wrappers['inputGroup']['.firstItem'] = $renderer->wrappers['inputGroup']['.lastItem'] = '';
+</code>
+</pre>
+<p>
+    Responsive input group means, that all controls in group are rendered to one input group and that is responsive. We
+    only remove some specific elements, like our TextArea. To start design, we set up input groups:
+</p>
+<pre>
+<code class="language-php">
+$design('first_name street account')->setInputGroup();
+$design('note')->setInputGroup(false);
+</code>
+</pre>
+<p>
+    <strong>$wrappers</strong> array are set by default for simple forms with grid. Responsive input groups needs a few
+    changes, as they are specific. Why and what is in commented code:
 </p>
 <pre>
 <code class="language-php">
 {$form->getFactoryMethod()}
 </code>
 </pre>
+<p>In next chapter we will use own <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a> to save and quickly reuse this setup in the future.</p>

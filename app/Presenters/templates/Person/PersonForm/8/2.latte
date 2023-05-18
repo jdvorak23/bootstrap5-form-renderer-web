@@ -1,0 +1,24 @@
+{block content}
+<p>
+    Second example is about providing own <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a>.
+    In <a n:href="Person:form, 'id'=>'own-wrappers'">chapter 6</a>, we made our own wrappers for responsive input group.
+    Let's assume, that we want it, but only for our <span class="code-string">Address</span> ControlGroup.
+    We use <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a> with our <a href="https://github.com/jdvorak23/bootstrap5-form-renderer-web/blob/main/app/Model/InputGroupWrappers.php" target="_blank">InputGroupWrappers</a>:
+</p>
+<pre>
+<code class="language-php">
+$inputGroupSetup = new HtmlFactory(null, new InputGroupWrappers());
+$design->group('Address')->setHtmlFactory($inputGroupSetup)
+    ->setGrid(false);
+$design->all('Address')->setHtmlFactory($inputGroupSetup);
+</code>
+</pre>
+<p>
+    We still need set up start of input group and specific widths:
+</p>
+
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

@@ -18,6 +18,5 @@ di:
 # Nastavení výchozích chybových hlášek pro formuláře.
 forms:
     messages:
-        INTEGER: 'Zadejte celé číslo.'
-        EMAIL: 'Neplatná emailová adresa.'
-        REQUIRED: '%label je povinné vyplnit.'
+        INTEGER: 'Insert valid number.'
+        REQUIRED: '%label is required'

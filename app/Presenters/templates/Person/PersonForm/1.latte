@@ -1,10 +1,13 @@
 {block content}
 <p>In this tutorial, we will use PersonForm with more fields, to show basic use of grid systems, some specific options,
     floating labels, input groups and even responsive input groups with floating labels.</p>
-<p>We will use form factory to create base form, and then we use factory method in presenter to create form and setup renderer.</p>
+<p>Form have some silly fields or description, but it is intended to show some principles and functions of renderer.</p>
+<p>We will use form factory to create base form, and then we use factory method in presenter to create form,
+    setup renderer and design it. It's always better to separate.</p>
 <p>Here is form factory:</p>
 <pre>
 <code class="language-php">
+
 namespace App\Forms;
 
 use Nette\Application\UI\Form;
@@ -29,7 +32,7 @@ class PersonFormFactory
         $form->addText('nick', 'Nickname')
             ->setRequired('Choose your nickname.');
         $form->addText('phone', 'Phone')
-            ->setOption("description", "Only number, or + and number")
+            ->setOption("description", "number, or + and number")
             ->addRule($form::PATTERN, 'Invalid phone number format.', '^(\+[0-9]*|[0-9]*)$')
             ->setRequired('Phone is required.');
 
@@ -44,7 +47,7 @@ class PersonFormFactory
         $form->addText("zip", "ZIP")
             ->addRule($form::PATTERN, 'Invalid ZIP format.', '\d{3} ?\d{2}')
             ->addFilter(function ($value) {
-                return str_replace(' ', '', $value); // odstraníme mezery z PSČ
+                return str_replace(' ', '', $value); // remove spaces from ZIP
             })
             ->setRequired('ZIP is required.');
         $form->addSelect("state", "State", ['Czech Republic', 'Slovak Republic'])
@@ -57,7 +60,7 @@ class PersonFormFactory
         $form->addSelect("bank", "Bank", $this->getBanks())
             ->setPrompt('Choose bank...')
             ->setRequired('Choose bank.');
-        $form->addTextArea("note", "Note");
+        $form->addTextArea("note", "Note", null, 3);
 
         $form->setCurrentGroup();
         $form->addCheckbox('agree', 'I agree with terms and conditions')
@@ -71,7 +74,6 @@ class PersonFormFactory
         $form->onValidate[] = function (Form $form) {
             $form->addError("Some error in whole form");
         };
-
         $form->onSuccess[] = function (Form $form, Array $values) {
 
         };
@@ -126,21 +128,14 @@ class PersonFormFactory
             '8500 Multitude Bank p.l.c.',
         ];
     }
+}
 </code>
 </pre>
 <p>Do not forget register it in services.neon</p>
 <p>Now we make factory method in presenter:</p>
 <pre>
 <code class="language-php">
-    protected function createComponentPersonForm() : Form
-    {
-        $form = $this->personFormFactory->create();
-        //------Renderer Setup
-        $renderer = new Renderer();
-        $form->setRenderer($renderer);
-        //------
-        return $form;
-    }
+{$form->getFactoryMethod()}
 </code>
 </pre>
 <p class="bg-warning d-inline">What is between two comments will be source code presented in next chapters.</p>

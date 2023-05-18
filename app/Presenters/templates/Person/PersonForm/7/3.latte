@@ -1,0 +1,30 @@
+{block content}
+<p>
+    Last thing is about validation <strong>javascript</strong> and one selector it uses. It is about element representing
+    <span class="code-variable">RadioList</span>, <span class="code-variable">CheckboxList</span> and <span class="code-variable">Checkbox</span>
+    in input group. Default wrapper is:
+</p>
+<pre>
+<code class="language-php">
+$wrappers['control']['listInputGroup'] = 'div class="input-group-text gap-2 form-control list-element"';
+</code>
+</pre>
+<p>
+    <span class="code-string">list-element</span> is not any Bootstrap class, it is just selector for javascript to
+    append <span class="code-string">is-valid</span> or <span class="code-string">is-invalid</span> class also on this element.
+    It is important mainly for functionality of class <span class="code-string">form-control</span>.
+</p>
+<p>
+    We can try design our <span class="code-string">'gender'</span> differently, use input group to achieve same design.
+    To demonstrate above-mentioned we will make our own <span class="code-string">'element'</span> and we will forget
+    class <span class="code-string">list-element</span>.
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+<p>Try to send the form, and you will see what is wrong - there is a border (green or red) missing. So don't
+forget <span class="code-string">list-element</span> class on list element in input group, when you use
+    <span class="code-string">form-control</span> class, or any other dependent on <span class="code-string">is-valid</span> or <span class="code-string">is-invalid</span> classes.
+</p>

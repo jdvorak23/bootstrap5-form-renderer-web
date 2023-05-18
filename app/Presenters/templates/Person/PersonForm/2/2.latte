@@ -4,7 +4,7 @@
     Bootstrap5FormRenderer works on the same basis. There is also <strong>$wrappers</strong> array,
     only with more wrappers.
 </p>
-<div class="alert alert-info"><strong>$wrappers</strong> array is located in class <strong>Wrappers</strong>
+<div class="alert alert-info"><strong>$wrappers</strong> array is located in class <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a>
     in same namespace as Bootstrap5FormRenderer.</div>
 <p>You can work with it in same way</p>
 <pre>
@@ -12,10 +12,11 @@
     $renderer->wrappers[..][..]
 </code>
 </pre>
-<p>It's already prepared for Bootstrap 5.</p>
-<p>There are two independent grid systems. One is Group-level, second is Control-level. Group-level
-    (counts those controls, which are not in Group, as being in independent Group) can be set by constructor parameter
-    <strong>$rows</strong>. It's false by default, let's try set it <em>true</em>:
+<p>It's already prepared for <a href="https://getbootstrap.com/docs/5.2/getting-started/introduction/" target="_blank">Bootstrap 5</a>.</p>
+<p>There are two independent <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#group-and-grid-part" target="_blank">grid systems</a>.
+    One is <strong>Group-level</strong>, second is <strong>Control-level</strong>. Group-level
+    (counts those controls, which are not in Group, as being in independent Group) can be set by <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Constructor" target="_blank">constructor parameter</a>
+    <strong>$rows</strong>. It's <span class="code-value">false</span> by default, let's try set it <span class="code-value">true</span>:
 </p>
 <pre>
 <code class="language-php">

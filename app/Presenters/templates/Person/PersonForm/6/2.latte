@@ -1,0 +1,56 @@
+{block content}
+<p>
+    In previous chapter we had some direct wrappers changes. To recapitulate:
+</p>
+<pre>
+<code class="language-php">
+$renderer->wrappers['group']['label'] = 'legend';
+$renderer->wrappers['inputGroup']['.wrapper'] = 'mb-4';
+$renderer->wrappers['inputGroup']['wrapper']['.own'] = 'mb-4 flex-fill';
+$renderer->wrappers['inputGroup']['wrapper']['grow'] = 'div class="flex-fill col-12 col-sm-6 col-md-6 col-lg-4"';
+$renderer->wrappers['group']['container'] = 'fieldset';
+$renderer->wrappers['controls']['inputGroup'] ='div class="input-group responsive-input-group"';
+$renderer->wrappers['inputGroup']['.firstItem'] = $renderer->wrappers['inputGroup']['.lastItem'] = '';
+</code>
+</pre>
+<p>
+    We need this or similar setup for responsive input groups. It's better to "save" it for future use in same scenario.
+    For that, we <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers#own-wrappers" target="_blank">will make our Wrappers</a>.
+    To make own wrappers, just create class, e.g. <span class="code-name">InputGroupWrappers</span>, copy-paste <strong>$wrappers</strong> array
+    and start make changes from previous lines. You can download class <a href="https://github.com/jdvorak23/bootstrap5-form-renderer-web/blob/main/app/Model/InputGroupWrappers.php" target="_blank">
+        InputGroupWrappers.php here</a>.
+</p>
+<p>
+    Defining own wrappers is also good point to do
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/css" target="_blank">recommended css setup from reference</a>.
+    And, also our textarea min-height from previous chapters. Our needed css is:
+</p>
+<pre>
+<code class="language-css">
+.input-group-height {
+    height: calc(1.5em + 0.75rem + 2px)!important;
+}
+.input-group-floating-height {
+    height: calc(3.5rem + 2px)!important;
+}
+.input-group-floating-label {
+    z-index: 5;
+}
+.textarea-default-height{
+    min-height: calc(6rem + 2px)!important;
+}
+</code>
+</pre>
+<p>
+
+</p>
+<p>
+    After that, we just add our <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Wrappers" target="_blank">Wrappers</a> to the renderer. Plus some other minor changes to improve form,
+    all only recapitulate steps from previous chapters. <code class="language-php">$wrappers['form']['container']</code>,
+    is ordinarily <span class="code-value">null</span>, but in this case we can use it to add container for form max-width:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

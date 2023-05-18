@@ -34,6 +34,7 @@
     &#60;/div&#62;
 </code>
 </pre>
+<p>The result:</p>
 <div class="input-group mb-3">
     <input type="text" class="form-control is-valid" placeholder="Username" aria-label="Username">
     <span class="input-group-text">@</span>
@@ -47,7 +48,7 @@
     adding <span class="code-string">has-validation</span> class to the parent div.
 </p>
 <p>
-    But there is also problem with validation feedback, it is not under Server field, where we probably want it more.
+    But there is also problem with validation feedback, it is not under <span class="code-name">Server</span> field, where we probably want it more.
     Maybe I miss something, but with this layout, it is not possible to get that feedback on proper place.
 </p>
 <p>Plus that problem with responsibility and finding out, that input groups, how they are naturally designed, are only for
@@ -55,7 +56,7 @@
 </p>
 <p>
     But that would be a shame! We do not give it up and try to solve these problems. First, I think it's obvious,
-    that if we want proper validation placing, we have to adjust layout to be more complex. We can try:
+    that if we want proper validation placing, we have to adjust layout to be more complex. I have found:
 </p>
 <pre>
 <code class="language-html">
@@ -100,57 +101,47 @@
     </div>
 </div>
 <p class="mt-3">Maybe it seems too deep, but this one is universal for all use-cases I have tried, minus-one deepness is just
-    insufficient. This layout was chosen for rendering controls into the input group. Labels are rendered into input group
+    insufficient. Labels are rendered into input group
     (if it's not floating) before control, description after. Of course there is still problem with rounding corners. It's
     not possible to reach somehow with Bootstrap5 pseudo classes, so Bootstrap5FormRenderer does it "manually", adds proper
     classes <span class="code-string">rounded-start</span>, <span class="code-string">rounded-end</span> and even
     <span class="code-string">rounded-0</span> for correcting wrong ones.
 </p>
-<p>The best way how I can show wrappers in <strong>$wrappers</strong> field, is to print them "like HTML":</p>
-<pre>
-<code class="language-php">
-    <$wrappers['controls']['inputGroup']>
-        <$wrappers['inputGroup']['wrapper'][...]> // 'shrink' or 'grow' by default, based on type of control.
-            <$wrappers['inputGroup']['container'][...]> // 'floating' with floating label, 'standard' the rest.
-                &#60;label/&#62;
-                &#60;element/&#62;
-                &#60;description/&#62;
-            <$wrappers['inputGroup']['container'][...]>
-            &#60;feedback/&#62;
-        <$wrappers['inputGroup']['wrapper'][...]>
-    <$wrappers['controls']['inputGroup']>
-</code>
-</pre>
+<p>
+    You can find more about <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout" target="_blank">wrappers and layouts in reference</a>.
+</p>
 <div class="alert alert-info">
-    If you want some element in input group, there is option <strong class="code-string">'inputGroup'</strong>,
-    which you can use on control to set up it. When input group is started this way, every next control will be
-    automatically add to it, until end of the <span class="code-name">ControlGroup</span> or form itself. You can
+    If you want some element in input group, there is control's option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#inputgroup" target="_blank">inputGroup</a>,
+    which you can use on control to set up it. When <strong>input group</strong> is started this way, every next control will be
+    automatically added to it, until end of the ControlGroup or the form itself. You can
     stop it or set a new one:
 </div>
 <table class="table">
     <tbody>
     <tr>
-        <td><em>null</em></td><td>is default. This control will be added to same input group as previous control, if it is in</td>
+        <td><span class="code-value">null</span></td><td>is default. This control will be added to same input group as previous control, if it is in</td>
     </tr><tr>
-        <td><em>false</em></td><td>this control will not be in input group. Use for end input group</td>
+        <td><span class="code-value">false</span></td><td>this control will not be in input group. Use for end input group</td>
     </tr><tr>
-        <td><em>true</em> </td><td>Starts <strong>new</strong> input group, with default wrapper in <strong>$wrappers['controls']['inputGroup']</strong> </td>
+        <td><span class="code-value">true</span> </td><td>Starts <strong>new</strong> input group, with default wrapper in <code class="language-php">$wrappers['controls']['inputGroup']</code> </td>
     </tr><tr>
-        <td><em>Html</em></td><td>Nette's <strong>Nette\Utils\Html</strong>. Starts <strong>new</strong> input group, with this wrapper</td>
+        <td><span class="code-value">Html</span></td><td>Starts <strong>new</strong> input group, with your own <a href="https://doc.nette.org/en/utils/html-elements" target="_blank">Nette\Utils\Html</a></td>
     </tr>
     <tr>
-        <td><em>string</em></td><td>which will be used as shorthand <strong>Html::el($value)</strong>. Starts <strong>new</strong> input group, with this wrapper</td>
+        <td><span class="code-value">string</span></td><td>Starts <strong>new</strong> input group, with <a href="https://doc.nette.org/en/utils/html-elements#toc-creating-an-html-element" target="_blank">Html::el(string)</a></td>
     </tr>
     </tbody>
 </table>
 <div class="alert alert-info">
     If you have one of grid system's on, <strong>input group</strong> will be handled as one item, like one single control.
-    That also means, that on second and every next control in the input group, options like <span class="code-string">'groupCol'</span>,
-    <span class="code-string">'row'</span>, <span class="code-string">'col'</span> have no sense and will be omitted. It's the same
-    as with button group.
+    That also means, that on second and every next control in the input group, options like <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#groupcol" target="_blank">groupCol</a>,
+        <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#row" target="_blank">row</a>,
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#col" target="_blank">col</a> have no sense and will be omitted. It's the same
+    as with button group we've already met, and is <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#group-and-grid-part" target="_blank">described in reference</a>.
 </div>
 <p>
-    We can try it on our form, just setup simple input groups suitable for wider screens:
+    We can try it on our form. We will change default wrapper for <strong>group level</strong> grid, to <span class="code-string">'col-12'</span>
+    and use this grid for gutters only. Then we start input groups for desired layout for wider screens:
 </p>
 <pre>
 <code class="language-php">

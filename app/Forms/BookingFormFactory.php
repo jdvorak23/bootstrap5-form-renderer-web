@@ -6,95 +6,83 @@ namespace App\Forms;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Html;
 
 final class BookingFormFactory
 {
     use Nette\SmartObject;
 
-    const PERSON_SETTINGS = [
-            'withPerson' => 'Vytvořit osobu',
-            'withoutPerson' => 'Zatím bez osoby',
-            'completed' => 'Bez osoby a označit jako vyřízenou'
-        ], INVOICE_SETTINGS = [
-            'withInvoice' => 'Pokračovat s fakturou',
-            'withoutInvoice' => 'Pokračovat bez faktury - označit jako vyřízenou'
+    const personItems = [
+            'withPerson' => 'Create a person',
+            'withoutPerson' => 'No person yet',
+            'completed' => 'No person and mark as completed'
+        ], invoiceItems = [
+            'withInvoice' => 'Continue with the invoice',
+            'withoutInvoice' => 'Continue without invoice - mark as completed'
         ];
 
-    /** @var Form */
-    private $form;
+    protected static $count = 1;
 
     public function create(): Form
     {
         $form = new Form();
 
-        //Rezervace
-        $form->addGroup('Rezervace');
+        $form->addGroup('Booking');
         $booking= $form->addContainer('booking');
-
-        // Skryté pole pro případné ID rezervace
         $booking->addHidden('id')->setNullable();
-
-        $booking->addText("date_from", "Od")
-            ->setRequired("Zadejte datum od")
-            ->addRule($form::PATTERN, 'Neplatný formát data. Zadejte datum ve formátu d(d).m(m).yyyy', '^([1-9]|0[1-9]|[12][0-9]|3[01])\.([1-9]|0[1-9]|1[0-2])\.\d{4}$');
-        $booking->addText("date_to", "Do")
-            ->setRequired("Zadejte datum do")
-            ->addRule($form::PATTERN, 'Neplatný formát data. Zadejte datum ve formátu d(d).m(m).yyyy', '^([1-9]|0[1-9]|[12][0-9]|3[01])\.([1-9]|0[1-9]|1[0-2])\.\d{4}$');
-        $booking->addInteger("price", "Cena")
+        $booking->addText("date_from", "From")
+            ->setRequired("Enter the date from")
+            ->addRule($form::PATTERN, 'Invalid date format. Enter the date in the format d(d).m(m).yyyy', '^([1-9]|0[1-9]|[12][0-9]|3[01])\.([1-9]|0[1-9]|1[0-2])\.\d{4}$');
+        $booking->addText("date_to", "To")
+            ->setRequired("Enter the date to")
+            ->addRule($form::PATTERN, 'Invalid date format. Enter the date in the format d(d).m(m).yyyy', '^([1-9]|0[1-9]|[12][0-9]|3[01])\.([1-9]|0[1-9]|1[0-2])\.\d{4}$');
+        $booking->addInteger("price", 'Price')
             ->setHtmlAttribute("step", "1000")
             ->setNullable();
-        $booking->addInteger("deposit", "Záloha")
+        $booking->addInteger("deposit", "Deposit")
             ->setHtmlAttribute("step", "1000")
             ->setNullable();
-        $booking->addTextArea("note", "Poznámka")
+        $booking->addTextArea("note", "Note")
             ->setNullable();
-        $form->addRadioList("personSettings", null, self::PERSON_SETTINGS)
+        $form->addRadioList("personSettings", null, self::personItems)
             ->setDefaultValue('withPerson')
-            ->addCondition($form::IsIn, ['withPerson'])->toggle("#contactGroup");
-
-        //Osoba
-        $form->addGroup('Kontakt')
-            ->setOption("id", "contactGroup");
+            ->addCondition($form::IsIn, ['withPerson'])->toggle("#contactGroup" . self::$count);
+        bdump($form->getElementPrototype()->id);
+        $form->addGroup('Contact')
+            ->setOption("id", "contactGroup" . self::$count);
         $person= $form->addContainer('person');
-        // Skryté pole pro případné ID osoby.
         $person->addHidden('id')->setNullable();
-
         $person->addEmail('email', 'Email')
             ->addRule($form::EMAIL)
             ->setNullable();
-        $person->addText('phone', 'Telefon (jen číslo, nebo + a číslo)')
-            ->addRule($form::PATTERN, 'Neplatný formát tel. čísla.', '^(\+[0-9]*|[0-9]*)$')
+        $person->addText('phone', 'Phone (number, or + and number)')
+            ->addRule($form::PATTERN, 'Invalid phone number format.', '^(\+[0-9]*|[0-9]*)$')
             ->setNullable();;
-        $person->addText('first_name', 'Jméno')
+        $person->addText('first_name', 'First name')
             ->setNullable();;
-        $person->addText('last_name', 'Příjmení')
+        $person->addText('last_name', 'Last name')
             ->setNullable();;
-        $person->addTextArea("address", "Adresa")
+        $person->addTextArea("address", "Address")
             ->setNullable();
-        $person->addText('company_name', 'Společnost')
+        $person->addText('company_name', 'Company')
             ->setNullable();
 
-        $form->addRadioList("invoiceSettings", null, self::INVOICE_SETTINGS)
+        $form->addRadioList("invoiceSettings", null, self::invoiceItems)
             ->setDefaultValue('withInvoice');
 
-        //Submit
         $form->setCurrentGroup();
-        $form->addSubmit("save", "Uložit");
+        $form->addSubmit("save", 'Save');
         $form->addButton('cancel', 'Cancel')
             ->setHtmlAttribute("type", "reset");
-
-
         $form->onValidate[] = function(Form $form)
         {
             $form->addError("Some error in whole form");
         };
-
         $form->onSuccess[] = function (Form $form, ArrayHash $values)
         {
 
         };
-
-        $this->form = $form;
+        self::$count++;
         return $form;
     }
 

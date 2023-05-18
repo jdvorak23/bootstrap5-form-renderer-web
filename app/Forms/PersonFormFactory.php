@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Model\MyTranslator;
 use Nette\Application\UI\Form;
 
 class PersonFormFactory
@@ -10,8 +9,6 @@ class PersonFormFactory
     public function create() : Form
     {
         $form = new Form();
-        $pok = new MyTranslator();
-        $form->setTranslator($pok);
         $form->addGroup("Person");
         $form->addText('first_name', "First name")
             ->setRequired("Extremly long validation message, intended to be over at least next line.");
@@ -27,7 +24,7 @@ class PersonFormFactory
         $form->addText('nick', 'Nickname')
             ->setRequired('Choose your nickname.');
         $form->addText('phone', 'Phone')
-            ->setOption("description", "only number, or + and number")
+            ->setOption("description", "number, or + and number")
             ->addRule($form::PATTERN, 'Invalid phone number format.', '^(\+[0-9]*|[0-9]*)$')
             ->setRequired('Phone is required.');
 
@@ -42,7 +39,7 @@ class PersonFormFactory
         $form->addText("zip", "ZIP")
             ->addRule($form::PATTERN, 'Invalid ZIP format.', '\d{3} ?\d{2}')
             ->addFilter(function ($value) {
-                return str_replace(' ', '', $value); // odstraníme mezery z PSČ
+                return str_replace(' ', '', $value); // remove spaces from ZIP
             })
             ->setRequired('ZIP is required.');
         $form->addSelect("state", "State", ['Czech Republic', 'Slovak Republic'])
@@ -55,7 +52,7 @@ class PersonFormFactory
         $form->addSelect("bank", "Bank", $this->getBanks())
             ->setPrompt('Choose bank...')
             ->setRequired('Choose bank.');
-        $form->addTextArea("note", "Note");
+        $form->addTextArea("note", "Note", null, 3);
 
         $form->setCurrentGroup();
         $form->addCheckbox('agree', 'I agree with terms and conditions')
@@ -69,7 +66,6 @@ class PersonFormFactory
         $form->onValidate[] = function (Form $form) {
             $form->addError("Some error in whole form");
         };
-
         $form->onSuccess[] = function (Form $form, Array $values) {
 
         };

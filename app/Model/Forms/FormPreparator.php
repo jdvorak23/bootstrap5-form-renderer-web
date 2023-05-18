@@ -1,70 +1,79 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\Forms;
 
 use Nette\Application\UI\Presenter;
-use Nette\Forms\Form;
+use Nette\SmartObject;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @property-read string $formName
+ * @property-read FormsCollection[] $chapters
+ * @property-read FormsCollection $activeChapter
+ * @property-read FormsCollection $firstChapter
+ */
 class FormPreparator
 {
+    use SmartObject;
     const factoryPrefix = 'createComponent';
     const indexDelimiter = '_';
 
-    protected array $forms = [];
+    /**@var FormsCollection[]*/
+    protected array $chapters = [];
+
+    protected FormsCollection $activeChapter;
+
+    protected FormsCollection $firstChapter;
+
     protected string $templatesDir;
-    protected string $activeFormIndex;
-    protected bool $isSubmitted = false;
     protected ?array $classCodeLines = null;
-    protected $id = null;
 
-    protected string $activeChapter;
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
     public function __construct(protected string $baseFormName, protected Presenter $presenter)
     {
         $this->baseFormName = lcfirst($this->baseFormName);
         $this->setTemplatesDir();
-        // Iterates all methods in given Presenter, proccess those which are connected with $baseFormName.
         $presenterReflection = new ReflectionClass($presenter);
         $this->setClassCodeLines($presenterReflection);
+        // Iterates all methods in given Presenter, process those which are connected with $baseFormName.
+        $forms = [];
         foreach($presenterReflection->getMethods() as $method){
             $indexes = $this->getFormIndexes($method->name);
             if(!is_null($indexes)){
                 if(count($indexes) == 1) {
-                    $this->forms[$indexes[0]] = $this->createFormWrapper($indexes, $method);
+                    $forms[$indexes[0]] = $this->createFormWrapper($indexes, $method);
                 }else{ // Může být pouze 1 nebo 2, takže 2
-                    if(isset($this->forms[$indexes[0]]) && $this->forms[$indexes[0]] instanceof FormWrapper)
+                    if(isset($forms[$indexes[0]]) && $forms[$indexes[0]] instanceof FormWrapper)
                         continue;
-                    if(!isset($this->forms[$indexes[0]]))
-                        $this->forms[$indexes[0]] = [];
-                    $this->forms[$indexes[0]][$indexes[1]] = $this->createFormWrapper($indexes, $method);
+                    if(!isset($forms[$indexes[0]]))
+                        $forms[$indexes[0]] = [];
+                    $forms[$indexes[0]][$indexes[1]] = $this->createFormWrapper($indexes, $method);
                 }
             }
         }
         // Sort by keys
-        ksort($this->forms);
-        foreach($this->forms as $key => $group)
+        ksort($forms);
+        foreach($forms as $key => $group)
             if(is_array($group))
-                ksort($this->forms[$key]);
-        $this->setActiveChapter();
-    }
-    public function getActiveChapter()
-    {
-        $index = $this->activeChapter;
-        $forms = is_array($this->forms[$index]) ? $this->forms[$index] : array($this->forms[$index]);
-        return $forms;
-    }
-    public function getActiveIndex()
-    {
-       return $this->activeChapter;
-    }
+                ksort($forms[$key]);
+        // Create chapters
+        foreach($forms as $key => $group){
+            $chapter = new  FormsCollection();
+            $this->firstChapter = $this->firstChapter ?? $chapter;
+            if(is_array($group))
+                foreach($group as $skey => $form)
+                    $chapter->addForm($form, $skey);
+            else
+                $chapter->addForm($group);
 
-    protected function setActiveChapter() : void
+            $this->chapters[$key] = $chapter;
+        }
+
+        // Pokud není nalezeno, $id ukazuje na neexistující formulář. V tom případě přesměruje na první existující.
+        if(!$this->setActiveChapter())
+            $this->presenter->redirect('this', ['id' => $this->firstChapter->url]);
+    }
+    protected function setActiveChapter() : bool
     {
         // Pokud byl odeslán nějaký formulář, zkontroluje jestli to byl "ten náš".
         // Pokud ano, nastaví jeho index jako $activeChapter.
@@ -72,85 +81,59 @@ class FormPreparator
             $dashPos = strpos($_POST['_do'],'-');
             $formName = $dashPos === false ? $_POST['_do'] : substr($_POST['_do'], 0, $dashPos);
             $indexes = $this->getFormIndexes(self::factoryPrefix . ucfirst($formName));
-            if(!is_null($indexes) && isset($this->forms[$indexes[0]])){
-                $this->activeChapter = $indexes[0];
-                $this->isSubmitted = true;
-                return;
+            if($indexes !== null && isset($this->chapters[$indexes[0]])){
+                $this->activeChapter = $this->chapters[$indexes[0]];
+                return true;
             }
         }
         // Pokud nebyl odeslán náš formulář, pokusí se nastavit $activeChapter podle parametru $id presenteru (musí takový formulář existovat).
         $id = $this->presenter->getParameter('id');
-        if(array_key_exists($id, $this->forms)){
-            $this->activeChapter = $id;
-            return;
+        if(array_key_exists($id, $this->chapters)){
+            $this->activeChapter = $this->chapters[$id];
+            return true;
         }
         // Pokud nebylo nalezeno, může id být název kapitoly (nebo název první sub-kapitoly)
-        foreach ($this->forms as $key => $value){
-            $caption = is_array($value) ? reset($this->forms[$key])->getCaption() : $value->getCaption();
-            $url = $this->getUrlFromCaption($caption);
-            if($url == $id){
-                $this->activeChapter = $key;
-                return;
+        foreach ($this->chapters as $chapter){
+            if($chapter->url == $id){
+                $this->activeChapter = $chapter;
+                return true;
             }
         }
-        // Pokud stále není nalezeno, $id ukazuje na neexistující formulář. V tom případě přesměruje na první existující.
-        reset($this->forms);
-        $this->presenter->redirect('this', ['id' => key($this->forms)]);
+        // Nenalezeno
+        return false;
     }
-
-    protected function getUrlFromCaption($caption)
+    //------
+    public function getFormName(): string
     {
-        $caption = strtolower(trim($caption));
-        return str_replace(' ','-', $caption);
-    }
-    public function getChapters() : array
-    {
-        $chapters = [];
-        foreach ($this->forms as $key => $value){
-            $caption = is_array($value) ? reset($this->forms[$key])->getCaption() : $value->getCaption();
-            $chapters[$key] = ['caption' => $caption, 'url' => $this->getUrlFromCaption($caption)];
-        }
-        return $chapters;
-    }
-
-    public function getFormName(){
         return $this->baseFormName;
     }
-
-
-    //todo deprec
-    public function getForms() : array
+    public function getChapters(): array
     {
-        $forms = [];
-        foreach ($this->forms as $key => $value)
-            $forms[$key] = is_array($value) ? $value : [$value];
-        return $forms;
+        return $this->chapters;
     }
-    // Used in template
-
-
+    public function getActiveChapter(): FormsCollection
+    {
+        return $this->activeChapter;
+    }
+    public function getFirstChapter(): FormsCollection
+    {
+        return $this->firstChapter;
+    }
+    //------
     public function getForm($factoryName) : FormWrapper|null
     {
         $indexes = $this->getFormIndexes($factoryName);
-        if(!isset($indexes))
+        if($indexes === null)
             return null;
+        $formName = lcfirst(str_replace(self::factoryPrefix, '', $factoryName));
 
-        if(isset($this->forms[$indexes[0]])){
-            if(isset($indexes[1]) && isset($this->forms[$indexes[0]][$indexes[1]]))
-                return $this->forms[$indexes[0]][$indexes[1]];
-            return $this->forms[$indexes[0]];
-        }
-
-        return null;
+        return isset($this->chapters[$indexes[0]]) ? $this->chapters[$indexes[0]]->getForm($formName) : null;
     }
-    public function isSubmitted() : bool
-    {
-        return $this->isSubmitted;
-    }
+    //------
     protected function setTemplatesDir() : void
     {
         $template = $this->presenter->formatTemplateFiles()[0];
-        $this->templatesDir = dirname($template) . 'FormPreparator.php/' . ucfirst($this->baseFormName);
+        $this->templatesDir = dirname($template) . '/' . ucfirst($this->baseFormName);
     }
 
     protected function setClassCodeLines(ReflectionClass $presenterReflection) : void
@@ -186,10 +169,7 @@ class FormPreparator
     }
     protected function getFormTemplateFile(array $indexes) : string|null
     {
-        if(count($indexes) == 1)
-            $templateFile = $this->templatesDir . '/' . $indexes[0] . '.latte';
-        else
-            $templateFile = $this->templatesDir . '/' . $indexes[0] . '/' . $indexes[1] . '.latte';
+        $templateFile = $this->templatesDir . '/' . implode('/', $indexes). '.latte';
         if(is_file($templateFile))
             return $templateFile;
         return null;

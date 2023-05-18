@@ -1,0 +1,25 @@
+{block content}
+<p>
+    Maybe you have noticed our last problem. When we use small screen, our textarea have very low height. It is because
+    Bootstrap 5 <a href="https://getbootstrap.com/docs/5.2/forms/floating-labels/" target="_blank">.form-floating</a> class
+    set height of every child with <span class="code-string">.form-control</span> class to <span class="code-value">height: calc(3.5rem + 2px);</span>.
+    If we  want other behaviour, we need to adjust.
+</p>
+<p>
+    Let's define our own class, I think height for three lines is OK:
+</p>
+<pre>
+<code class="language-css">
+.textarea-default-height{
+    min-height: calc(6rem + 2px)!important;
+}
+</code>
+</pre>
+<p>
+    And we can add to our form:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

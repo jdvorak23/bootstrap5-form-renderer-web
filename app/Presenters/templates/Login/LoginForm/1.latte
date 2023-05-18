@@ -1,0 +1,24 @@
+{block content}
+<div class="alert alert-info">This is short tutorial for explaining
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Builders" target="_blank">builders and Designer</a>.
+</div>
+<p>
+    LoginForm  could be made this way, but then it is not good example for us ...
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>
+
+And template:
+<pre>
+<code class="language-html">
+&#60div class="card mx-auto" style="max-width:400px"&#62
+    &#60div class="card-header"&#62Login&#60/div&#62
+    &#60div class="card-body"&#62
+        &#123;control loginForm&#125;
+    &#60/div&#62
+&#60/div&#62
+</code>
+</pre>

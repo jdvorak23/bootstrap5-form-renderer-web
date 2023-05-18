@@ -1,0 +1,97 @@
+{block content}
+<p><a href="https://doc.nette.org/en/forms/controls#toc-addcheckboxlist" target="_blank">CheckboxList</a> and
+    <a href="https://doc.nette.org/en/forms/controls#toc-addradiolist" target="_blank">RadioList</a> are quite specific controls.
+    They're one control, but have more items. When you have, for example, <a href="https://doc.nette.org/en/forms/controls#toc-addtext" target="_blank">TextInput</a>
+    , element of this <span class="code-name">TextInput</span> is pretty clear - it's <code class="language-html">&#60;input type="text" .../&#62;</code> html element,
+    representing control itself. But what is it in the case of <span class="code-name">CheckboxList</span> or <span class="code-name">RadioList</span> (and even <span class="code-name">Checkbox</span>)? The element
+    of these controls is not control element itself, it's just some <strong>wrapper (container)</strong>, which has children of <strong>items</strong>.
+    Item is single checkbox or radio (probably with label together).</p>
+<p>Nette's DefaultFromRenderer doesn't care about this. When it's about rendering any control, it does:</p>
+<pre>
+<code class="language-php">
+    $el = $control->getControl();
+</code>
+</pre>
+<p>This method <strong>getControl()</strong> is (as expected) overloaded in classes we are talking about. It's creating Html structure
+    of all items. There is (only these three classes have it) specific property <strong>$container</strong>, which is that
+    <strong>wrapper</strong> for the whole structure. It's set in constructor as default:
+</p>
+<pre>
+<code class="language-php">
+    $this->container = Html::el();
+</code>
+</pre>
+<p>This means, by default, there's no element. These classes all define method <strong>getContainerPrototype()</strong> to
+    bring possibility to change this <strong>$container</strong> (wrapper). With DefaultFormRenderer, you have to do something like this,
+    if you want setup this element:
+</p>
+<pre>
+<code class="language-php">
+    $container = $form['gender']->getContainerPrototype();
+    $container->setName('div');
+    $container->class('my-class');
+</code>
+</pre>
+<p>We were already talking about - there are specific Bootstrap 5 features (input groups, floating labels) which need
+    render different layout to work properly. Also, DefaultFormRenderer is quite old. What was "standard"
+    years ago, is deprecated nowadays. It involves how items in these classes are rendered. If you try
+    render this form with DefaultFormRenderer you can see it on our <span class="code-string">'gender'</span> <span class="code-name">RadioList</span>:
+</p>
+<pre>
+<code class="language-html">
+&#60;label&#62;
+    &#60;input type="radio" name="gender" required="" data-nette-rules="..." value="male"&#62;Male
+&#60;/label&#62;
+&#60;br&#62;
+&#60;label&#62;
+    &#60;input type="radio" name="gender" required="" value="female"&#62;Female
+&#60;/label&#62;
+</code>
+</pre>
+<p>I'm not sure if this even fits HTML5 standard. At least this doesn't fit
+    <a href="https://getbootstrap.com/docs/5.2/forms/checks-radios/" target="_blank">Bootstrap 5 checks and radios</a> layout. What
+    is even more important - this is not work of DefaultFormRenderer, this structure is completely created not by
+    renderer, but with <strong>getControl()</strong> method on control as described above.
+</p>
+<p>We need render different structure of item's elements and labels. Fortunately, these control classes are
+    pre-prepared for this, having <strong>getControlPart($key)</strong> and <strong>getLabelPart($key)</strong>
+    methods for creating these html elements one-by-one. And it's exactly how Bootstrap5FormRenderer works with
+    this type of controls. It renders them manually, let Nette's classes for controls create only
+    <strong>item</strong> element and <strong>label</strong>.
+</p>
+<div class="alert alert-success">
+    Bootstrap5FormRenderer renders <span class="code-name">RadioList</span> and <span class="code-name">CheckboxList</span> manually.
+    The property <strong>$container</strong> of these classes is always <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#checkboxlist-radiolist" target="_blank"><strong>omitted</strong></a>! Instead of it, there is wrapper in <strong>$wrappers</strong>
+    representing it. It is different for different scenarios. If these controls <strong>are not in input group</strong>,
+    it is <code class="language-php text-nowrap">$wrappers['control']['list']</code>. There is also wrapper for every <strong>item</strong> -
+    <code class="language-php text-nowrap">$wrappers['control']['listItem']</code> And, their <strong>parent</strong> element is specific, defined in
+    <code class="language-php text-nowrap">$wrappers['container']['list']</code>.
+</div>
+<p> <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#checkboxlist-radiolist" target="_blank">There is layout picture for these controls in reference</a>.</p>
+<div class="alert alert-info">
+    Bootstrap5FormRenderer brings four more options on control. It is <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#element" target="_blank">element</a>
+    and <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#item" target="_blank">item</a>
+    for setting own wrapper, <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#element-1" target="_blank">.element</a>
+    and <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#item-1" target="_blank">.item</a>
+    to add classes into default <strong>element</strong> or <strong>item</strong> wrapper.
+    They have sense and works only on <span class="code-name">CheckboxList</span>, <span class="code-name">RadioList</span> and
+    <span class="code-name">Checkbox</span>, on other controls are omitted.
+</div>
+<p>
+    We still haven't finished our form. I think in our case, where only two items are in <span class="code-name">RadioList</span>, we can use <strong>inline
+        radios</strong>. Bootstrap 5 has <a href="https://getbootstrap.com/docs/5.2/forms/checks-radios/#inline" target="_blank">form-check-inline</a> class for it. <code class="language-php text-nowrap">$wrappers['container']['list']</code>
+    is default <strong>parent</strong> wrapper for RadioList. It's default value is pre-prepared for lists with more items, and definitely
+    is not suitable for our inline plans. Easiest for us is not use it at all, by setting option
+    <strong>'parent'</strong> to <span class="code-value">null</span>.
+</p>
+<p>
+    Element is, by default, defined in <code class="language-php text-nowrap">$wrappers['control']['list']</code> and is
+    <span class="code-value">null</span>. For our purpose, we define it with Bootstrap's
+    <span class="code-string">pt-md-2</span> class to make radios properly "inline" with <span class="code-string">'email'</span>
+     <span class="code-name">TextInput</span>. Last thing we need is set class <span class="code-string">form-check-inline</span> to item wrapper:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

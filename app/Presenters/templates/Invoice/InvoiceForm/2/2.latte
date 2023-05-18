@@ -1,0 +1,116 @@
+{block content}
+<p>
+    Our problem from previous chapter can be solved more conceptional way. It is quite simple - in our
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Layout#selectbox-textinput-textarea" target="_blank">input group control's layout</a>
+    we just need our label rendered on first place of <span class="code-name">wrapper</span>, not <span class="code-name">parent</span>
+    as it is by default. We can achieve it quickly with redefining particular renderer.
+</p>
+<p>
+    Concrete renderers are in <code class="language-php">namespace Jdvorak23\Bootstrap5FormRenderer\Renderers\ControlRenderers</code>.
+    The "router" resolving which is used is <code class="language-php">Jdvorak23\Bootstrap5FormRenderer\Renderers\ControlRenderer</code>.
+    All descendants of <a href="https://api.nette.org/forms/master/Nette/Forms/Controls/TextBase.html">TextBase</a> (which are our <a href="https://doc.nette.org/cs/forms/controls#toc-addtext" target="_blank">TextInputs</a>)
+    are rendered by <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/blob/master/src/Renderers/ControlRenderers/FloatingControlRenderer.php" target="_blank">FloatingControlRenderer</a>.
+</p>
+<p>
+    All we need to know are two methods:
+</p>
+<pre>
+<code class="language-php">
+    protected function renderControl(Html $container): void
+    {
+        if($this->floatingLabel) {
+            $this->renderParent();
+            $this->renderLabel($this->parent);
+        }else{
+            $this->renderLabel($this->parent);
+            $this->renderParent();
+        }
+        $this->renderDescription($this->parent);
+        $this->renderFeedback($this->parent);
+    }
+    protected function renderToGroup(Html $container): void
+    {
+        $this->renderInputGroupWrapper();
+        if($this->floatingLabel) {
+            $this->renderParent($this->inputGroupWrapper);
+            $this->renderLabel($this->parent);
+        }else{
+            $this->renderLabel($this->parent);
+            $this->renderParent($this->inputGroupWrapper);
+        }
+        $this->renderDescription($this->parent);
+        $this->renderFeedback($this->inputGroupWrapper);
+    }
+</code>
+</pre>
+<p>
+    This renderer is the most complex of <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/tree/master/src/Renderers/ControlRenderers" target="_blank">all</a>,
+    because of handling floating labels, others have 3-6 lines of code per method.
+    One of these two methods is used for rendering, depending on being / not being in the input group.
+</p>
+<p>
+    We have these methods for rendering needed parts (we do not need to use all of them). Some of them have parameter <code class="language-php">$container</code>,
+    the element they will be rendered into. It is sometimes optional, if it is not provided, wrapper is rendered to the top wrapper provided to the <span class="code-name">render()</span> method.
+    <strong>Control</strong> itself (or element representing control) is <strong>rendered automatically</strong> to the
+    <span class="code-name">parent</span> element when it is rendered. Order of the lines is important for proper placing
+    of the elements.
+</p>
+<pre>
+<code class="language-php">
+// Renders input group wrapper, use when input group is on
+$this->renderInputGroupWrapper($container = null); // Optional
+// Renders label, if any
+$this->renderLabel($container);
+// Renders parent. Automatically renders Control (element) into it!!!
+$this->renderParent($container = null); // Optional
+// Renders description, if any
+$this->renderDescription($container);
+// Renders both feedbacks, if any
+$this->renderFeedback($container);
+// For lists - render items. Always rendered to the control element
+$this->renderItems();
+</code>
+</pre>
+
+<p>
+    All we need is extend this class, overload <span class="code-name">renderToGroup</span> method, and change
+    one line of the code - when floating label is off, we render <strong>label</strong>
+    to the <span class="code-name">inputGroupWrapper</span> instead of <span class="code-name">Parent</span>:
+</p>
+<pre>
+<code class="language-php">
+
+namespace App\Model;
+
+use Jdvorak23\Bootstrap5FormRenderer\Renderers\ControlRenderers\FloatingControlRenderer;
+use Nette\Utils\Html;
+
+class InputGroupSeparateLabel extends FloatingControlRenderer
+{
+    protected function renderToGroup(Html $container): void
+    {
+        $this->renderInputGroupWrapper();
+        if($this->floatingLabel) {
+            $this->renderParent($this->inputGroupWrapper);
+            $this->renderLabel($this->parent);
+        }else{
+            $this->renderLabel($this->inputGroupWrapper); //Our change
+            $this->renderParent($this->inputGroupWrapper);
+        }
+        $this->renderDescription($this->parent);
+        $this->renderFeedback($this->inputGroupWrapper);
+    }
+}
+</code>
+</pre>
+<p>
+    Now we need append our renderer. Most straightforward way is through option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#renderer" target="_blank">renderer</a> on control.
+    We also need to set <code class="language-php">$wrappers['label']['.inputGroup']</code>, because it has
+    <span class="code-string">input-group-text</span> class, which is not suitable for us, instead of it we use classic
+    <span class="code-string">form-label</span> class:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

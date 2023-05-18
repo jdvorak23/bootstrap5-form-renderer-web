@@ -1,29 +1,73 @@
-<div class="d-flex justify-content-center">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        {foreach $forms->getForms() as $index => $description}
-            <li class="nav-item" role="presentation">
-                <a n:href="'this', 'id' => $index" class="text-decoration-none"><button n:class="nav-link, $index == $forms->getActiveIndex() ? active" type="button">{$index}</button></a>
-            </li>
-        {/foreach}
-    </ul>
-</div>
+{varType App\Model\Forms\FormPreparator $forms}
+{block menu}
+    {var $formName = $forms->formName}
+    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#{$formName}" aria-expanded="true" aria-controls="{$formName}">
+        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+        {$formName|firstUpper}
+        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+    </a>
+    <div class="collapse show" id="{$formName}" aria-labelledby="heading{$formName|firstUpper}" data-bs-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav">
+            {foreach $forms->chapters as $index => $chapter}
+                {if count($chapter->forms) < 2}
+                    <a n:class="nav-link, $chapter === $forms->activeChapter ? active" n:href="'this', 'id' => $chapter->url">{$index}. {$chapter->caption}</a>
+                {else}
+                    </nav>
+                    <nav class="sb-sidenav-menu-nested nav accordion" id="{$formName}{$index}ChaptersMenu">
+                        <a n:class="nav-link, collapsed, $chapter === $forms->activeChapter ? active" href="#" data-bs-toggle="collapse" data-bs-target="#{$formName}{$index}SubChapters" aria-expanded="false" aria-controls="{$formName}{$index}SubChapters">
+                            {$index}. {$chapter->caption}
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div n:class="collapse, $chapter === $forms->activeChapter ? show" id="{$formName}{$index}SubChapters" aria-labelledby="headingOne" data-bs-parent="#{$formName}{$index}ChaptersMenu">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                {var $counter = 1}
+                                {foreach $chapter->forms as $formIndex => $form}
+                                    <a n:class="nav-link" n:href="this#{$form->getUrl()}, 'id' => $chapter->url">{$index}.{$formIndex} {$form->getCaption()}</a>
+                                    {do $counter++}
+                                {/foreach}
+                            </nav>
+                        </div>
 
+                    </nav>
+                    <nav class="sb-sidenav-menu-nested nav">
+                {/if}
+
+            {/foreach}
+        </nav>
+    </div>
+{/block}
+{block forms}
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane show active">
         <div style="max-width: 992px" class="m-auto mt-3">
-            {foreach $forms->getActiveChapter() as $form}
+            {foreach $forms->activeChapter->forms as $form}
                 <div class="card mb-2">
                     <div class="card-header">
-                        <h5 class="mb-3">{ucfirst($form->getCaption())}</h5>
+                        <h5 class="py-2 mb-1" id="{$form->getUrl()}">{$form->getCaption()}</h5>
                         {if $form->getTemplateFile() !== null}
-                            {include $form->getTemplateFile(), form: $form}
+                            {embed $form->getTemplateFile(), form: $form}
+                                {block footer}
+                                {/block}
+                            {/embed}
                         {/if}
                     </div>
-                    <div class="card-body mx-4">
-                        {control {$form->getName()}}
+                    <div class="card-body  mx-md-4">
+                        {do $presenter[$form->getName()]->setAction($presenter[$form->getName()]->getAction() . '#frm-' . $form->getName())}
+                        {ifset block $form->getName()}
+                            {include block $form->getName()}
+                        {else}
+                            {control {$form->getName()}}
+                        {/ifset}
                     </div>
+                    {if $form->getTemplateFile() !== null}
+                        {embed $form->getTemplateFile(), form: $form}
+                            {block content}
+                            {/block}
+                        {/embed}
+                    {/if}
                 </div>
             {/foreach}
         </div>
     </div>
 </div>
+{/block}

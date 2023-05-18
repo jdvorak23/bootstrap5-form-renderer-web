@@ -1,0 +1,43 @@
+{block content}
+<p>
+    There is a lot about <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Validation" target="_blank">validation in reference</a>.
+    In this tutorial I suppose you have read it...
+</p>
+
+<p>
+    We would use form from <a n:href="Person:form, 'id' => 'floating-labels'">chapter 3</a>. Have you ever tried to send
+    some form on this site? They all use client validation. If you fill them correctly, they are send to the server and
+    validated with an error on whole form - just to demonstrate it. You maybe should try, if you haven't yet.
+</p>
+<p>
+    As written in the reference, there are <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Constructor" target="_blank">two constructor parameters</a> to set up things about validation. You just need
+    to know this:
+</p>
+<ul>
+    <li>
+        If you want to use client validation, let them on their default values
+    </li>
+    <li>
+        If you don't want to use it, just set <code class="language-php">$clientValidation = false</code> and
+        <code class="language-php">$novalidate = true</code>
+    </li>
+</ul>
+<p>
+    If you want to use client validation, you need javascript. You need <a href="https://github.com/nette/forms/blob/master/src/assets/netteForms.js" target="_blank">
+    Nette's validation javascript</a> and also <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/blob/master/src/assets/validation.js" target="_blank">specific validation javascript for renderer</a>.
+    If you attach them to the project, everything should work.
+</p>
+<p>
+    As <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Validation#server-side-validation-and-wrappers" target="_blank">written in reference</a>,
+    you need to set up valid feedback messages. If you don't set up anything, value from <code class="language-php text-nowrap">$wrappers['valid']['message']</code>
+    is taken. It is <span class="code-string">'It looks good.'</span> by default. If you don't want a valid feedback message, just set it to <code class="language-php text-nowrap">$wrappers['valid']['message'] = ''</code>.
+</p>
+<p>
+    You can set it specifically on every control by <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#feedback" target="_blank">option feedback</a>.
+    We can try on our textarea:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

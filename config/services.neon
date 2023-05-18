@@ -8,7 +8,8 @@ search:
 
 services:
 	- App\Router\RouterFactory::createRouter
-	- App\Forms\TestFormFactory
 	- App\Forms\PersonFormFactory
 	- App\Forms\InvoiceFormFactory
 	- App\Forms\BookingFormFactory
+	- App\Forms\LoginFormFactory
+	- Jdvorak23\Bootstrap5FormRenderer\Wrappers

@@ -4,30 +4,20 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use Jdvorak23\Bootstrap5FormRenderer\Bootstrap5FormRenderer;
-use App\Forms\TestFormFactory;
 use Nette;
-use Nette\Application\UI\Form;
-use Nette\Utils\Html;
 
 
 final class HomePresenter extends Nette\Application\UI\Presenter
 {
 
-    public function __construct(private TestFormFactory $testFormFactory)
+    public function __construct()
     {
         parent::__construct();
-
     }
     protected function startup(): void
     {
         parent::startup();
-        if($this->getAction() !== 'test')
-            $this->redirect("Person:form", ['id' => 1]);
+        $this->redirect("Person:form", ['id' => 'factory']);
     }
 
-    protected function createComponentTestForm() : Form
-    {
-        return $this->testFormFactory->create();
-    }
 }

@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use App\Components\CodeLines;
-use App\Model\FormPreparator;
+use App\Model\Forms\FormPreparator;
 use Nette\Application\UI\Presenter;
 
 abstract class BaseFormPresenter extends Presenter
@@ -18,8 +18,10 @@ abstract class BaseFormPresenter extends Presenter
         $formName = $this->getFormName();
         $id = $this->getParameter('id');
         $this->formPreparator = new FormPreparator($formName, $this);
-        $this->formPreparator->setId($id);
+        //$this->formPreparator->setId($id); //? todo
         $this->template->forms = $this->formPreparator;
+        //$this->template->setFile(__DIR__ . '/templates/form.latte');
+
         /*if($this->formPreparator->isSubmitted())
             $this->template->activeFormIndex = $this->formPreparator->getActiveFormIndex();
         else

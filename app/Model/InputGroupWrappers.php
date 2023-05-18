@@ -9,7 +9,7 @@ class InputGroupWrappers extends Wrappers
     protected array $wrappers = [
         'form' => [
             'container' => null,
-            'errorContainer' => 'div class="error"',
+            'errorContainer' => 'div class="form-errors"',
             'errorItem' => 'div class="alert alert-danger"',
         ],
 
@@ -68,7 +68,7 @@ class InputGroupWrappers extends Wrappers
         'control' => [
             'list' => null,
             'listItem' => 'div class="form-check"',
-            'listInputGroup' => 'div class="input-group-text gap-2 list-element"',
+            'listInputGroup' => 'div class="input-group-text gap-2 form-control list-element"',
             'listInputGroupItem' => 'div',
             '.inputGroupButton' => 'btn btn-outline-secondary',
             '.submit' => 'btn btn-primary',
@@ -76,8 +76,8 @@ class InputGroupWrappers extends Wrappers
             '.button' => 'btn btn-secondary',
             '.image' => '',
             '.all' => '',
-            '.required' => 'required',
-            '.optional' => 'optional',
+            '.required' => '',
+            '.optional' => '',
             '.checkbox' => 'form-check-input',
             '.radio' => 'form-check-input',
             '.select' => 'form-select',
@@ -107,7 +107,7 @@ class InputGroupWrappers extends Wrappers
             '.item' => 'form-check-label',
             '.class' => 'form-label',
             //'..inputGroupFloatingStyle' => 'z-index: 5;',
-            '.required' => 'required',
+            '.required' => '',
             'prefix' => '',
             'requiredprefix' => '',
             'suffix' => '',
@@ -120,6 +120,7 @@ class InputGroupWrappers extends Wrappers
             'container' => null,
             'prefix' => '',
             'suffix' => '',
+            'requiredprefix' => '',
             'requiredsuffix' => '',
             'push' => '',
             'requiredpush' => '',

@@ -3,46 +3,51 @@
 namespace App\Forms;
 
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 
 class InvoiceFormFactory
 {
-
-    protected Form $form;
-
     public function create(): Form
     {
         $form = new Form();
-        $form->addGroup("Faktury");
-        $form->addInteger('deposit_due_date_after', 'Datum splatnosti zálohy')
+
+        $form->addGroup("Invoices");
+        $form->addInteger('deposit_due_date_after', 'Deposit due date')
             ->setRequired()
-            ->setOption("description", "dní po vystavení");
-        $form->addInteger('payment_due_date_before', 'Datum splatnosti platby')
-            ->setOption("description", "dní před nástupem")
+            ->setOption("description", "days after exposure");
+        $form->addInteger('payment_due_date_before', 'Payment due date')
+            ->setOption("description", "days before boarding")
             ->setRequired();
-        $form->addGroup("Položky na faktuře");
-        $form->addText('deposit_description', 'Záloha');
-        $form->addText('deposit_withdraw_description', 'Zaplacená záloha');
-        $form->addText('payment_description', 'Platba');
-        $form->addText('payment_withdraw_description', 'Zaplacená platba');
-        $form->addText('penalty_description', 'Penále');
+
+        $form->addGroup("Invoice items");
+        $form->addText('deposit_description', 'Deposit');
+        $form->addText('deposit_withdraw_description', 'Paid deposit');
+        $form->addText('payment_description', 'Payment');
+        $form->addText('payment_withdraw_description', 'Paid payment');
+        $form->addText('penalty_description', 'Penalty');
 
         $form->setCurrentGroup();
-        $form->addSubmit('save', 'Uložit položky');
-
+        $form->addSubmit('save', 'Save');
+        $form->addButton('cancel', 'Cancel')
+            ->setHtmlAttribute("type", "reset");
 
         $form->onValidate[] = function (Form $form) {
             $form->addError("Some error in whole form");
         };
 
-        $form->onSuccess[] = function (Form $form, ArrayHash $values) {
-            bdump($values);
+        $form->onSuccess[] = function (Form $form, array $values) {
         };
+        $this->setDefaults($form);
         return $form;
     }
 
-    protected function setDefaults()
+    protected function setDefaults(Form $form)
     {
-
+        $form['deposit_due_date_after']->setDefaultValue(7);
+        $form['payment_due_date_before']->setDefaultValue(14);
+        $form['deposit_description']->setDefaultValue('Deposit for service');
+        $form['deposit_withdraw_description']->setDefaultValue('Paid deposit');
+        $form['payment_description']->setDefaultValue('Payment for service');
+        $form['payment_withdraw_description']->setDefaultValue('Paid service');
+        $form['penalty_description']->setDefaultValue('Penalty for service cancellation');
     }
 }

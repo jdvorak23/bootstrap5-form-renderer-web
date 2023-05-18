@@ -1,4 +1,10 @@
+{import '../formsPills.latte'}
+{block menu-invoiceForm}
+    {include menu}
+{/block}
+{*block invoiceForm1_1}
+    gfgg
+{/block*}
 {block content}
-<h1 n:block="title" class="text-center mb-3">InvoiceForm</h1>
-
-{include ../formsPills.latte, forms: $forms}
+<h1 n:block="title" class="text-center my-3">{$forms->getFormName()|firstUpper}</h1>
+{include forms}

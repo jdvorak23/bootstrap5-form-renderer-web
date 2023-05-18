@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-use App\Model\FormWrapper;
+use App\Model\Forms\FormWrapper;
 use Nette\Application\UI\Control;
 use Nette\Forms\Controls\HiddenField;
 

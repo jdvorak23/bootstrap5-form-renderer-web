@@ -1,0 +1,47 @@
+{block content}
+<p>
+    We will work with class <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/HtmlFactory" target="_blank">HtmlFactory</a> from
+    <a n:href="Person:form 'id'=>'predefined-options'">previous chapter</a>. We could also use it for <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Inserting%20HTML" target="_blank">inserting Html</a>
+    where needed.
+</p>
+<div class="alert alert-info">
+    There are two options on control and ControlGroup - <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#pseudobefore" target="_blank">pseudoBefore</a> and
+    <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Control%20Options#pseudoafter" target="_blank">pseudoAfter</a>.
+    It could be <span class="code-name">HtmlFactory</span> or array
+    of them. When you set HtmlFactory's <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Options#class-options" target="_blank">Options</a>
+    for this <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Pseudo-element%20Options" target="_blank">pseudo-element</a>,
+    you should use one special - <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Pseudo-element%20Options#content" target="_blank">content</a>.
+    It works only for <span class="code-name">HtmlFactory</span> which is not connected to real control or ControlGroup and defines
+    content - <strong>desired Html to insert</strong>. This <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Pseudo-element%20Options" target="_blank">pseudo-element</a> is then rendered based on HtmlFactory's provided
+    <span class="code-name">Options</span> or / and <span class="code-name">Wrappers</span>.
+</div>
+<p>
+    We use final form from previous chapter, and insert banner with some important information:
+</p>
+<pre>
+<code class="language-php">
+$banner = Html::el('div class="alert alert-warning mb-0 text-center"')
+    ->setText("Some very important information for the client");
+$bannerFactory = new HtmlFactory(
+    $design->pseudo()->setGroupColumn('div class="col-12"')
+        ->setContent($banner)
+);
+$design('gender')->insertHtmlBefore($bannerFactory);
+</code>
+</pre>
+<div class="alert alert-info">
+    Use <code class="language-php">$design->pseudo()</code> or <code class="language-php">Designer::pseudo()</code> to design <span class="code-name">Options</span> for <strong>pseudo-element</strong>.
+    It offers only options, which are usable for <strong>Control's</strong> pseudo-element rendering (both grids columns, control-level grid, input group, button group).
+    For <strong>ControlGroup's</strong> pseudo element none of them have sense (if set, they are omitted).
+    For both pseudo-elements, there is method <span class="code-name">setContent()</span> to set option <a href="https://github.com/jdvorak23/bootstrap5-form-renderer/wiki/Pseudo-element%20Options#content" target="_blank">content</a>.
+
+
+</div>
+<p>
+    For now, we have:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

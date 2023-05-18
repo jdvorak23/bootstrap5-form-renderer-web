@@ -1,6 +1,21 @@
-.my-height {
-    height: calc(1.5em + 0.75rem + 2px);
+.input-group-height {
+    height: calc(1.5em + 0.75rem + 2px)!important;
 }
-.my-floating-label-height{
-    height: calc(3.5rem + 2px);
+.input-group-floating-height {
+    height: calc(3.5rem + 2px)!important;
+}
+.input-group-floating-label {
+    z-index: 5;
+}
+.textarea-default-height{
+    min-height: calc(6rem + 2px)!important;
+}
+.rounded-start-next + *{
+    border-bottom-left-radius: 4px!important;
+    border-top-left-radius: 4px!important;
+}
+@media (min-width: 576px) {
+    .input-group-sm-height{
+        height: calc(1.5em + 0.75rem + 2px)!important;
+    }
 }

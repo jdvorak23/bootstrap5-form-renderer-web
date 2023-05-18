@@ -1,0 +1,24 @@
+{block content}
+<p>
+    We can also use it as ControlGroup pseudo-element.
+</p>
+<pre>
+<code class="language-php">
+$groupBanner = Html::el('div class="alert alert-info text-center"')
+    ->setText("Your address will be used for delivery.");
+$groupBannerFactory = new HtmlFactory(
+    $design->pseudo()->setContent($groupBanner)
+);
+$design->group('Address')->insertHtmlBefore($groupBannerFactory);
+</code>
+</pre>
+
+<p>
+    Now we use our <a n:href="Person:form#predefined-wrappers 'id'=>'predefined-options'">input group Address setup from previous chapter</a>.
+    If we insert Html into input group, we must properly set wrappers, or it is scattered. We have three examples how to insert own HTML:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

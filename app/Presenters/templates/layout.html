@@ -1,10 +1,559 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Layout</title>
+    <style>
+        div{
+            padding: 1.5em;
+            border: 1px solid grey;
+            margin-bottom: 1em;
+            position: relative;
+        }
+        div:last-of-type{
+            margin-bottom: 0;
+        }
+        div:first-of-type{
+            margin-top: 0.5em;
+        }
+        .wrapper{
+            position: absolute;
+            left: 15px;
+            top: -0.6em;
+            background: white;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: #690;
+        }
+        .option{
+            position: absolute;
+            right: 15px;
+            top: -0.6em;
+            background: white;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: #DD4A68;
+        }
+        article {
+            max-width: 640px;
+            margin: 20px;
+        }
+        .code-name{
+            color: #DD4A68;
+        }
+        .code-variable{
+            color: #DD4A68;
+        }
+        section{
+            margin-top: 2em;
+        }
+    </style>
 </head>
 <body>
-$END$
+<article>
+
+    <section>
+        <div>
+            <span class="wrapper">error container</span>
+            <span class="option">errorContainer</span>
+            <div>
+                <span class="wrapper">error item</span>
+                <span class="option">error</span>
+                &#60;error 1 /&#62;
+            </div>
+            <div>
+                <span class="wrapper">error item</span>
+                <span class="option">error</span>
+                &#60;error 2 /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">valid container</span>
+            <span class="option">validContainer</span>
+            <div>
+                <span class="wrapper">valid item</span>
+                <span class="option">valid</span>
+                &#60;valid feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">error floatingLabel</span>
+            <span class="option">errorContainer</span>
+            <div>
+                <span class="wrapper">error floatingLabelItem</span>
+                <span class="option">error</span>
+                &#60;error 1 /&#62;
+            </div>
+            <div>
+                <span class="wrapper">error floatingLabelItem</span>
+                <span class="option">error</span>
+                &#60;error 2 /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">valid floatingLabel</span>
+            <span class="option">validContainer</span>
+            <div>
+                <span class="wrapper">valid floatingLabelItem</span>
+                <span class="option">valid</span>
+                &#60;valid feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">error inputGroup</span>
+            <span class="option">errorContainer</span>
+            <div>
+                <span class="wrapper">error inputGroupItem</span>
+                <span class="option">error</span>
+                &#60;error 1 /&#62;
+            </div>
+            <div>
+                <span class="wrapper">error inputGroupItem</span>
+                <span class="option">error</span>
+                &#60;error 2 /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">valid inputGroup</span>
+            <span class="option">validContainer</span>
+            <div>
+                <span class="wrapper">valid inputGroupItem</span>
+                <span class="option">valid</span>
+                &#60;valid feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+
+
+    <section>
+        <h3>Description</h3>
+        <div>
+            <span class="wrapper">description container</span>
+            <span class="option">descriptionContainer</span>
+            <div>
+                <span class="wrapper">description inputGroupItem</span>
+                <span class="option">descriptionItem | .description</span>
+                &#60;description text /&#62;
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>
+            <span class="wrapper">description container</span>
+            <span class="option">descriptionContainer</span>
+            <div>
+                <span class="wrapper">description item</span>
+                <span class="option">descriptionItem | .description</span>
+                &#60;description text /&#62;
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <h3>MultiSelectBox, UploadControl, any own BaseControl</h3>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper shrink</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container standard</span>
+                    <span class="option">parent</span>
+                    &#60;label /&#62;<br>
+                    &#60;control /&#62;<br>
+                    &#60;description /&#62;
+                </div>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper"></span>
+            <div>
+                <span class="wrapper">container default</span>
+                <span class="option">parent</span>
+                &#60;label /&#62;<br>
+                &#60;control /&#62;<br>
+                &#60;description /&#62;<br>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>CheckboxList, RadioList</h3>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper shrink</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container standard</span>
+                    <span class="option">parent</span>
+                    &#60;label /&#62;<br>
+                    <div>
+                        <span class="wrapper">control listInputGroup</span>
+                        <span class="option">element</span>
+                        <div>
+                            <span class="wrapper">control listInputGroupItem</span>
+                            <span class="option">item</span>
+                            &#60;item 1 /&#62;<br>
+                            &#60;label item 1 /&#62;<br>
+                        </div>
+                        <div>
+                            <span class="wrapper">control listInputGroupItem</span>
+                            <span class="option">item</span>
+                            &#60;item 2 /&#62;<br>
+                            &#60;label item 2 /&#62;<br>
+                        </div>
+                    </div>
+                    &#60;description /&#62;
+                </div>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+
+        <div>
+            <span class="wrapper"></span>
+            <div>
+                <span class="wrapper">container list</span>
+                <span class="option">parent</span>
+                &#60;label /&#62;<br>
+                <div>
+                    <span class="wrapper">control list</span>
+                    <span class="option">element</span>
+                    <div>
+                        <span class="wrapper">control listItem</span>
+                        <span class="option">item</span>
+                        &#60;item 1 /&#62;<br>
+                        &#60;label item 1 /&#62;<br>
+                    </div>
+                    <div>
+                        <span class="wrapper">control listItem</span>
+                        <span class="option">item</span>
+                        &#60;item 2 /&#62;<br>
+                        &#60;label item 2 /&#62;<br>
+                    </div>
+                </div>
+                &#60;description /&#62;<br>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <h3>SelectBox, TextInput, TextArea</h3>
+    <section>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper grow</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container floating</span>
+                    <span class="option">parent</span>
+                    &#60;control /&#62;<br>
+                    &#60;label /&#62;<br>
+                    &#60;description /&#62;
+                </div>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper"></span>
+            <div>
+                <span class="wrapper">container floatingLabel</span>
+                <span class="option">parent</span>
+                &#60;control /&#62;<br>
+                &#60;label /&#62;<br>
+                &#60;description /&#62;<br>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper grow</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container standard</span>
+                    <span class="option">parent</span>
+                    &#60;label /&#62;<br>
+                    &#60;control /&#62;<br>
+                    &#60;description /&#62;
+                </div>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper"></span>
+            <div>
+                <span class="wrapper">container default</span>
+                <span class="option">parent</span>
+                &#60;label /&#62;<br>
+                &#60;control /&#62;<br>
+                &#60;description /&#62;<br>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <h3>Checkbox</h3>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper shrink</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container standard</span>
+                    <span class="option">parent</span>
+                    <div>
+                        <span class="wrapper">control listInputGroup</span>
+                        <span class="option">element</span>
+                        <div>
+                            <span class="wrapper">control listInputGroupItem</span>
+                            <span class="option">item</span>
+                            &#60;Checkbox /&#62;<br>
+                            &#60;label /&#62;<br>
+                        </div>
+                    </div>
+                    &#60;description /&#62;
+                </div>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper"></span>
+            <div>
+                <span class="wrapper">control listItem</span>
+                <span class="option">parent</span>
+                &#60;Checkbox /&#62;<br>
+                &#60;label /&#62;<br>
+                &#60;description /&#62;<br>
+                &#60;feedback /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Buttons</h3>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper shrink</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container standard</span>
+                    <span class="option">parent</span>
+                    &#60;control /&#62;<br>
+                    &#60;description /&#62;
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <span class="wrapper">controls buttons</span>
+            <span class="option">buttonGroup</span>
+            <div>
+                <span class="wrapper">container button</span>
+                <span class="option">parent</span>
+                &#60;Button 1 /&#62;<br>
+                &#60;description /&#62;
+            </div>
+            <div>
+                <span class="wrapper">container button</span>
+                <span class="option">parent</span>
+                &#60;Button 2 /&#62;<br>
+                &#60;description /&#62;
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <h3>control wrappers</h3>
+        <div>
+            <span class="wrapper">controls inputGroup</span>
+            <span class="option">inputGroup</span>
+            <div>
+                <span class="wrapper">inputGroup wrapper</span>
+                <span class="option">wrapper</span>
+                <div>
+                    <span class="wrapper">inputGroup container</span>
+                    <span class="option">parent</span>
+                    &#60;control /&#62;
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <span class="wrapper">Any other top</span>
+            <div>
+                <span class="wrapper">container</span>
+                <span class="option">parent</span>
+                &#60;control /&#62;
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Top wrappers</h3>
+        <div>
+            <span class="wrapper">&#60;form&#62;</span>
+            <div>
+                <span class="wrapper">form errorContainer</span>
+                <div>
+                    <span class="wrapper">form errorItem</span>
+                    Some error in whole form
+                </div>
+                <div>
+                    <span class="wrapper">form errorItem</span>
+                    Some other error on whole form
+                </div>
+            </div>
+            <div>
+                <span class="wrapper">form container</span>
+                <div  style="border: 2px solid grey;">
+                    <span class="wrapper">group container</span>
+                    <span class="option">container</span>
+                    <div>
+                        <span class="wrapper">group label</span>
+                        <span class="option">labelContainer</span>
+                        &#60;ControlGroup 1 label /&#62; | <span class="code-variable">label</span>
+                    </div>
+                    <div>
+                        <span class="wrapper">group description</span>
+                        <span class="option">descriptionContainer</span>
+                        &#60;ControlGroup 1 description /&#62; | <span class="code-variable">description</span>
+                    </div>
+                    <span style="margin-top: 1em;margin-left: 1em;display: block"> &#60;ControlGroup 1 items /&#62;</span>
+                </div>
+                <div  style="border: 2px solid grey;">
+                    <span class="wrapper">group container</span>
+                    <span class="option">container</span>
+                    <div>
+                        <span class="wrapper">group label</span>
+                        <span class="option">labelContainer</span>
+                        &#60;ControlGroup 2 label /&#62; | <span class="code-variable">label</span>
+                    </div>
+                    <div>
+                        <span class="wrapper">group description</span>
+                        <span class="option">descriptionContainer</span>
+                        &#60;ControlGroup 2 description /&#62; | <span class="code-variable">description</span>
+                    </div>
+                    <span style="margin-top: 1em;margin-left: 1em;display: block">&#60;ControlGroup 2 items /&#62;</span>
+                </div>
+                <span style="margin-top: 1em;margin-left: 2em;display: block">&#60;Items not in any ControlGroup /&#62;</span>
+            </div>
+            <div>
+                <span class="wrapper">hidden container</span>
+                &#60;all hiddens /&#62;
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>
+            <span class="wrapper">group container</span>
+            <span class="option">container</span>
+            <div>
+                <span class="wrapper">group label</span>
+                <span class="option">labelContainer</span>
+                &#60;ControlGroup 1 label /&#62; | <span class="code-variable">label</span>
+            </div>
+            <div>
+                <span class="wrapper">group description</span>
+                <span class="option">descriptionContainer</span>
+                &#60;ControlGroup 1 description /&#62; | <span class="code-variable">description</span>
+            </div>
+            <div>
+                <span class="wrapper">group row</span>
+                <span class="option">row</span>
+                <div>
+                    <span class="wrapper">group col</span>
+                    <span class="option"><span style="color: black">CotrolGroup:</span> col <span style="color: black">Cotrol:</span> groupCol</span>
+                    &#60;Item 1 /&#62;
+                </div>
+                <div>
+                    <span class="wrapper">group col</span>
+                    <span class="option"><span style="color: black">CotrolGroup:</span> col <span style="color: black">Cotrol:</span> groupCol</span>
+                    <div>
+                        <span class="wrapper">controls row</span>
+                        <span class="option">row</span>
+                        <div>
+                            <span class="wrapper">controls col</span>
+                            <span class="option">defaultCol<span style="color: black">|</span>col</span>
+                            &#60;Item 2 /&#62;
+                        </div>
+                        <div>
+                            <span class="wrapper">controls col</span>
+                            <span class="option">col</span>
+                            &#60;Item 3 /&#62;
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <span class="wrapper">group col</span>
+                    <span class="option"><span style="color: black">CotrolGroup:</span> col <span style="color: black">Cotrol:</span> groupCol</span>
+                    <div>
+                        <span class="wrapper">controls inputGroup</span>
+                        <span class="option">inputGroup</span>
+                        &#60;Item 4 /&#62;<br>
+                        &#60;Item 5 /&#62;
+                    </div>
+                </div>
+                <div>
+                    <span class="wrapper">group col</span>
+                    <span class="option"><span style="color: black">CotrolGroup:</span> col <span style="color: black">Cotrol:</span> groupCol</span>
+                    <div>
+                        <span class="wrapper">controls buttons</span>
+                        <span class="option">buttonGroup</span>
+                        &#60;Item 6 - button /&#62;<br>
+                        &#60;Item 7 - button /&#62;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
 </body>
 </html>

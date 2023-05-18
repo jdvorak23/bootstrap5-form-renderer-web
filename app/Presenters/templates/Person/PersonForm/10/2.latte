@@ -1,0 +1,40 @@
+{block content}
+<p>
+    We use form <a n:href="Person:form#responsive-input-group-wrappers, id => 'own-wrappers'">from chapter 6.2</a>.
+    There we use own <a href="https://doc.nette.org/en/utils/html-elements#toc-htmlstringable" target="_blank">HtmlStringable</a>
+    description instead of <strong>text</strong>, so it is <strong>not</strong> translated automatically by the renderer.
+</p>
+<p>
+    We have to manage it by ourselves:
+</p>
+<pre>
+<code class="language-php">
+$descLarge = Html::el('div class="input-group-text rounded-0 d-none d-sm-flex"')
+    ->addText($translator->translate('number, or + and number'));
+$descSmall = Html::el('div class="input-group-text rounded-0 d-sm-none"')
+    ->addText('(+) ' . $translator->translate('and number'));
+$design('phone')->setInputGroupWrapper('long')
+    ->setDescription(Html::el()->addHtml($descLarge)
+                               ->addHtml($descSmall));
+</code>
+</pre>
+<p>
+    Of course this is not very good :D If we would like to have functionality like this, we should have
+    <a href="https://doc.nette.org/en/application/components" target="_blank">component</a> for it, implementing
+    <code class="language-php">renderToString()</code> method. Imagine we have it, with name <span class="code-string">'responsiveText'</span>,
+    then we would do:
+</p>
+<pre>
+<code class="language-php">
+$design('phone')->setInputGroupWrapper('long')
+    ->setDescription($this['responsiveText']->renderToString('number, or + and number', '(+) and number'));
+</code>
+</pre>
+<p>
+    In our simple example we would make it by hand:
+</p>
+<pre>
+<code class="language-php">
+{$form->getFactoryMethod()}
+</code>
+</pre>

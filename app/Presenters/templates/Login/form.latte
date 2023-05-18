@@ -1,0 +1,17 @@
+{import '../formsPills.latte'}
+{block loginForm1}
+    <div class="card mx-auto" style="max-width:400px">
+        <div class="card-header">Login</div>
+        <div class="card-body">
+            {control loginForm1}
+        </div>
+    </div>
+{/block}
+
+{block menu-loginForm}
+    {include menu}
+{/block}
+{block content}
+<h1 n:block="title" class="text-center my-3">{$forms->getFormName()|firstUpper}</h1>
+{include forms}
+
