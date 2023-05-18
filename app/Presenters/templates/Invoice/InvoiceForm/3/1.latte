@@ -6,6 +6,18 @@
 </code>
 </pre>
 <p>
+    There is only little need of another css:
+</p>
+<pre>
+<code class="language-css">
+@media (min-width: 576px) {
+    .input-group-sm-height{
+        height: calc(1.5em + 0.75rem + 2px)!important;
+    }
+}
+</code>
+</pre>
+<p>
     And our own renderer, <span class="code-name">ResponsiveFloating</span>. We use own HtmlFactory, create it and append
     in constructor:
 </p>
