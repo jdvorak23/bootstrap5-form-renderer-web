@@ -1,7 +1,7 @@
 Bootstrap5FormRenderer tutorial web with examples
 =============================
 
-Tutorial web with examples. Online version [here](http://jan-dvorak.cz).
+Tutorial web with examples. Online version [here](http://bootstrap-5-form-renderer.cz).
 
 Installation
 ------------
